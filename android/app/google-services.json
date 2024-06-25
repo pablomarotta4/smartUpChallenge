@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "480471654399",
+    "project_id": "smartupchallenge-390e5",
+    "storage_bucket": "smartupchallenge-390e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480471654399:android:10682070a8ef4b97e491ca",
+        "android_client_info": {
+          "package_name": "com.example.smartup_challenge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOtJR4ay3Nnc3LHMW5sbaGsSeGQaJtlpo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480471654399:android:33bdab9dfe5be236e491ca",
+        "android_client_info": {
+          "package_name": "com.example.smartupchallenge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOtJR4ay3Nnc3LHMW5sbaGsSeGQaJtlpo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
