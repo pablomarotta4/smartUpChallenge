@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:smartup_challenge/screens/authRedirect.dart';
 import 'package:smartup_challenge/screens/welcomePage.dart';
-import '';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
