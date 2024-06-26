@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:smartup_challenge/screens/welcomePage.dart'; // Asegúrate de importar la página principal
 
 class HeaderWidget extends StatefulWidget {
   final bool showButton;
-  final String iconType; // 'close' or 'back'
+  final String iconType; 
   final Map<String, IconData> iconSelector = {
     'close': Icons.close,
     'back': Icons.arrow_back,
@@ -23,7 +24,20 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           widget.showButton
-              ? Icon(widget.iconSelector[widget.iconType], color: Colors.blue)
+              ? GestureDetector(
+                  onTap: () {
+                    if (widget.iconType == 'close') {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => WelcomePage()),
+                        (Route<dynamic> route) => false,
+                      );
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Icon(widget.iconSelector[widget.iconType], color: Colors.blue),
+                )
               : Container(),
           Image.asset('assets/icons/twitter.png', height: 35, width: 35),
           SizedBox(width: 24), 

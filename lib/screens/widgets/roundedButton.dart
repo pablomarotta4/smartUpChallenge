@@ -1,21 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  final String buttonType; // 'google' o 'createAccount'
+  final String buttonType;
   final VoidCallback onPressed;
 
   RoundedButton({Key? key, required this.buttonType, required this.onPressed}) : super(key: key);
 
   final Map<String, dynamic> buttonsData = {
     'google': {
-      'text': 'Continuar con Google',
+      'text': 'Continue with Google',
       'color': Colors.white,
       'textColor': Colors.black,
       'icon': 'assets/icons/google.png',
     },
     'createAccount': {
-      'text': 'Crear cuenta',
+      'text': 'Create account',
       'color': Color.fromARGB(255, 29, 161, 242),
       'textColor': Colors.white,
       'icon': null,

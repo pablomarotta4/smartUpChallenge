@@ -4,6 +4,7 @@ import 'package:smartup_challenge/screens/widgets/roundedButton.dart';
 import 'package:smartup_challenge/screens/widgets/welcomePageFooter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:smartup_challenge/screens/register.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -70,7 +71,10 @@ class _WelcomePageState extends State<WelcomePage> {
                   RoundedButton(
                     buttonType: 'createAccount',
                     onPressed: () {
-                      // Acción para el botón de crear cuenta
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Register()),
+                      );
                     },
                   ),
                   SizedBox(height: 20),

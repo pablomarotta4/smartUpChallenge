@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:smartup_challenge/screens/login.dart'; 
 
 class WelcomePageFooter extends StatelessWidget {
   @override
@@ -10,14 +12,20 @@ class WelcomePageFooter extends StatelessWidget {
         children: [
           RichText(
             textAlign: TextAlign.left, // Alinea el texto a la izquierda
-            text: const TextSpan(
+            text: TextSpan(
               text: 'Have an account already? ',
-              style: TextStyle(color: Colors.grey, fontSize: 10),
+              style: const TextStyle(color: Colors.grey, fontSize: 10),
               children: <TextSpan>[
                 TextSpan(
                   text: 'Log In',
-                  style: TextStyle(color: Colors.blue, fontSize: 10),
-                  // Acción de navegación a la pantalla de inicio de sesión
+                  style: const TextStyle(color: Colors.blue, fontSize: 10),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Login()),
+                      );
+                    },
                 ),
               ],
             ),
