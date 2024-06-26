@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:smartup_challenge/screens/authRedirect.dart';
+import 'package:smartup_challenge/screens/welcomePage.dart';
+import '';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,14 +12,14 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AuthRedirect(),
+      theme: ThemeData(
+        brightness: Brightness.dark, 
+        scaffoldBackgroundColor: Color.fromARGB(255, 21, 23, 24), 
+      ),
+      home: WelcomePage(),
     );
   }
 }
-
-
