@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/loginFooter.dart';
-import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
+import 'package:provider/provider.dart';
 
 class EnterPasswordPage extends StatefulWidget {
   final String loginFactor;
@@ -30,29 +30,23 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     final auth = Provider.of<AuthController>(context, listen: false);
 
     try {
-      UserCredential? userCredential;
-
+      UserCredential loginSuccess;
       if (widget.loginFactor.contains('@')) {
-        // Autenticación con correo electrónico
-        userCredential = await auth.signInWithEmailAndPassword(
+        loginSuccess = await auth.signInWithEmailAndPassword(
           email: widget.loginFactor,
           password: password,
         );
       } else if (RegExp(r'^\+?[0-9]{10,15}$').hasMatch(widget.loginFactor)) {
-        // Autenticación con número de teléfono (suponiendo que el número se ha guardado como email@phone.com)
-        userCredential = await auth.signInWithEmailAndPassword(
-          email: '${widget.loginFactor}@phoneauth.com',
-          password: password,
-        );
+        // implementar logica de authenticacion con tel
+        print("Autenticación con teléfono no implementada en este ejemplo");
+        return;
       } else {
-        // Autenticación con nombre de usuario no implementada en este ejemplo
-        setState(() {
-          _errorText = 'Autenticación con nombre de usuario no implementada';
-        });
+        // implementar logica de inicio de sesion con username
+        print("Autenticación con nombre de usuario no implementada en este ejemplo");
         return;
       }
 
-      if (userCredential != null) {
+      if (mounted) {
         setState(() {
           _errorText = null;
           Navigator.push(
@@ -62,16 +56,14 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
             ),
           );
         });
-      } else {
+      }
+    } catch (e) {
+      if (mounted) {
         setState(() {
           _errorText = 'Error al iniciar sesión';
         });
       }
-    } catch (e) {
       print('Error al iniciar sesión: $e');
-      setState(() {
-        _errorText = 'Error al iniciar sesión: $e';
-      });
     }
   }
 

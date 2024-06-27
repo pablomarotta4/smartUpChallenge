@@ -21,7 +21,7 @@ class _WelcomePageState extends State<WelcomePage> {
     final auth = Provider.of<AuthController>(context, listen: false);
     auth.authStateChanges().listen((User? user) {
       setState(() {
-        // Actualiza el estado del usuario
+        // actualizar estado 
       });
     });
   }
@@ -58,9 +58,12 @@ class _WelcomePageState extends State<WelcomePage> {
                       onPressed: () async {
                         User? user = await auth.signInWithGoogle();
                         if (user != null) {
-                          // Maneja la lógica cuando el usuario se autentica exitosamente
+                          // logica exitosa
                         } else {
-                          // Maneja la lógica cuando la autenticación falla
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const WelcomePage()),
+                          );
                         }
                       },
                     ),

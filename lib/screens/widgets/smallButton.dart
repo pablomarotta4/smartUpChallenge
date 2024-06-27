@@ -17,6 +17,11 @@ class SmallButton extends StatelessWidget {
       'color': Color.fromARGB(255, 29, 161, 242),
       'textColor': Colors.white,
     },
+    'register': {
+      'text': 'Register',
+      'color': Color.fromARGB(255, 29, 161, 242),
+      'textColor': Colors.white,
+    },
   };
 
   @override

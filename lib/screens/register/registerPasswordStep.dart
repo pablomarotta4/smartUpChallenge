@@ -41,18 +41,14 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
       UserCredential? userCredential;
 
       if (widget.emailOrPhone.contains('@')) {
-        // Registrar con correo electrónico
         userCredential = await auth.createAccount(
           email: widget.emailOrPhone,
           username: widget.name,
           password: password,
-          phone: '', // Si no se proporciona el teléfono
           birth: widget.birth,
         );
       } else {
-        // Registrar con número de teléfono
         userCredential = await auth.createAccount(
-          email: '', // Si no se proporciona el correo electrónico
           phone: widget.emailOrPhone,
           username: widget.name,
           password: password,
@@ -63,7 +59,6 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
       if (userCredential != null) {
         setState(() {
           _errorText = null;
-          // Navegar a la pantalla principal o mostrar un mensaje de éxito
           Navigator.push(
             context,
             MaterialPageRoute(
