@@ -38,7 +38,7 @@ class _WelcomePageState extends State<WelcomePage> {
             HeaderWidget(showButton: false),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 10.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -46,7 +46,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     const Text(
                       "See what's happening in the world right now.",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
