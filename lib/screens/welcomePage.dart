@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/roundedButton.dart';
 import 'package:smartup_challenge/screens/widgets/welcomePageFooter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smartup_challenge/screens/register.dart';
+import 'package:smartup_challenge/screens/authenticate/autenticate.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -14,17 +14,15 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+  final Authenticate _auth = Authenticate();
   User? _user;
 
   @override
   void initState() {
     super.initState();
-    _auth.authStateChanges().listen((event) {
+    _auth.authStateChanges().listen((User? user) {
       setState(() {
-        _user = event;
+        _user = user;
       });
     });
   }
@@ -55,8 +53,11 @@ class _WelcomePageState extends State<WelcomePage> {
                   const Spacer(),
                   RoundedButton(
                     buttonType: 'google',
-                    onPressed: () {
-                      _handleGoogleSignIn();
+                    onPressed: () async {
+                      User? user = await _auth.signInWithGoogle();
+                      if (user != null) {
+                      } else {
+                      }
                     },
                   ),
                   const SizedBox(height: 10),
@@ -73,11 +74,11 @@ class _WelcomePageState extends State<WelcomePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Register()),
+                        MaterialPageRoute(builder: (context) => const Register()),
                       );
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 32.0),
                     child: Row(
@@ -141,8 +142,8 @@ class _WelcomePageState extends State<WelcomePage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
-                  WelcomePageFooter(),
+                  const SizedBox(height: 20),
+                  const WelcomePageFooter(),
                 ],
               ),
             ),
@@ -150,21 +151,5 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
       ),
     );
-  }
-
-  Future<void> _handleGoogleSignIn() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        await _auth.signInWithCredential(credential);
-      }
-    } catch (e) {
-      print(e);
-    }
   }
 }
