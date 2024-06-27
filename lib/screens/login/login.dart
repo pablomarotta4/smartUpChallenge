@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smartup_challenge/screens/login/loginPasswordStep.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/loginFooter.dart';
-import 'package:smartup_challenge/screens/authenticate/autenticate.dart';
+import 'package:smartup_challenge/controllers/authController.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -14,14 +15,16 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _controller = TextEditingController();
   String? _errorText;
-  final Authenticate _auth = Authenticate();
 
   void _handleNext() async {
     String input = _controller.text.trim();
+    final auth = Provider.of<AuthController>(context, listen: false);
 
     try {
-      bool exists = await _auth.checkIfEmailOrPhoneOrUsernameExists(
-        email: input, phone: input, username: input
+      bool exists = await auth.checkIfEmailOrPhoneOrUsernameExists(
+        email: input,
+        phone: input,
+        username: input,
       );
 
       setState(() {

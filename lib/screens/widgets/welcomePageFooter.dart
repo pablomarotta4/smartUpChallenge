@@ -8,19 +8,19 @@ class WelcomePageFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 32.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5), 
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start, 
+        mainAxisAlignment: MainAxisAlignment.start, 
         children: <Widget>[
           RichText(
-            textAlign: TextAlign.left, 
+            textAlign: TextAlign.start, 
             text: TextSpan(
               text: 'Have an account already? ',
-              style: const TextStyle(color: Colors.grey, fontSize: 11),
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
               children: <TextSpan>[
                 TextSpan(
                   text: 'Log In',
-                  style: const TextStyle(color: Colors.blue, fontSize: 11),
+                  style: const TextStyle(color: Colors.blue, fontSize: 12),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       Navigator.push(

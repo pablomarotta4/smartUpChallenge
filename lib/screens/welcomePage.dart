@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/roundedButton.dart';
 import 'package:smartup_challenge/screens/widgets/welcomePageFooter.dart';
-import 'package:smartup_challenge/screens/register.dart';
-import 'package:smartup_challenge/screens/authenticate/autenticate.dart';
+import 'package:smartup_challenge/screens/register/register.dart';
+import 'package:smartup_challenge/controllers/authController.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -14,137 +15,138 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  final Authenticate _auth = Authenticate();
-  User? _user;
-
   @override
   void initState() {
     super.initState();
-    _auth.authStateChanges().listen((User? user) {
+    final auth = Provider.of<AuthController>(context, listen: false);
+    auth.authStateChanges().listen((User? user) {
       setState(() {
-        _user = user;
+        // Actualiza el estado del usuario
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthController>(context);
+    final User? user = auth.user;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             HeaderWidget(showButton: false),
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0), 
-                    child: Text(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    const Text(
                       "See what's happening in the world right now.",
                       style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      textAlign: TextAlign.justify, 
+                      textAlign: TextAlign.justify,
                     ),
-                  ),
-                  const Spacer(),
-                  RoundedButton(
-                    buttonType: 'google',
-                    onPressed: () async {
-                      User? user = await _auth.signInWithGoogle();
-                      if (user != null) {
-                      } else {
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Or",
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey,
+                    const Spacer(),
+                    RoundedButton(
+                      buttonType: 'google',
+                      onPressed: () async {
+                        User? user = await auth.signInWithGoogle();
+                        if (user != null) {
+                          // Maneja la lógica cuando el usuario se autentica exitosamente
+                        } else {
+                          // Maneja la lógica cuando la autenticación falla
+                        }
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  RoundedButton(
-                    buttonType: 'createAccount',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Register()),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 32.0),
-                    child: Row(
+                    const SizedBox(height: 10),
+                    const Row(
                       children: [
-                        Text(
-                          "By signing up, you agree to our ",
-                          style: TextStyle(
-                            fontSize: 9,
+                        Expanded(
+                          child: Divider(
                             color: Colors.grey,
+                            thickness: 0.5,
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                        Text(
-                          "Terms of Service ",
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: Colors.blue,
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            "Or",
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                        Text(
-                          ", ",
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: Colors.blue,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          "Privacy Policy ",
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: Colors.blue,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          ", ",
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: Colors.blue,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          "and ",
-                          style: TextStyle(
-                            fontSize: 9,
+                        Expanded(
+                          child: Divider(
                             color: Colors.grey,
+                            thickness: 0.5,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          "Cookie Use.",
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: Colors.blue,
-                          ),
-                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  const WelcomePageFooter(),
-                ],
+                    const SizedBox(height: 10),
+                    RoundedButton(
+                      buttonType: 'createAccount',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const RegisterPage()),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3.0),
+                      child: Text.rich(
+                        TextSpan(
+                          style: TextStyle(
+                            fontSize: 9,
+                            color: Colors.grey,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "By signing up, you agree to our ",
+                            ),
+                            TextSpan(
+                              text: "Terms of Service",
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ", ",
+                            ),
+                            TextSpan(
+                              text: "Privacy Policy",
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ", and ",
+                            ),
+                            TextSpan(
+                              text: "Cookie Use.",
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    const WelcomePageFooter(),
+                  ],
+                ),
               ),
             ),
           ],

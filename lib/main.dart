@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:smartup_challenge/controllers/authController.dart';
 import 'package:smartup_challenge/screens/welcomePage.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,15 +11,19 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthController()),
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
         brightness: Brightness.dark, 
         scaffoldBackgroundColor: Color.fromARGB(255, 21, 23, 24), 
       ),
-      home: WelcomePage(),
+        home: WelcomePage(),
+      ),
     );
   }
 }

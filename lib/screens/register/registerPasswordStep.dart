@@ -1,20 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/loginFooter.dart';
-import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
+import 'package:provider/provider.dart';
 
-class EnterPasswordPage extends StatefulWidget {
-  final String loginFactor;
-  const EnterPasswordPage({Key? key, required this.loginFactor}) : super(key: key);
+class RegisterPasswordStep extends StatefulWidget {
+  final String name;
+  final String emailOrPhone;
+  final String birth;
+
+  const RegisterPasswordStep({
+    Key? key,
+    required this.name,
+    required this.emailOrPhone,
+    required this.birth,
+  }) : super(key: key);
 
   @override
-  _EnterPasswordPageState createState() => _EnterPasswordPageState();
+  _RegisterPasswordStepState createState() => _RegisterPasswordStepState();
 }
 
-class _EnterPasswordPageState extends State<EnterPasswordPage> {
+class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
   String? _errorText;
@@ -25,36 +33,37 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     });
   }
 
-  void _handleLogin() async {
-    String password = _passwordController.text;
+  void _handleRegister() async {
     final auth = Provider.of<AuthController>(context, listen: false);
+    String password = _passwordController.text;
 
     try {
       UserCredential? userCredential;
 
-      if (widget.loginFactor.contains('@')) {
-        // Autenticación con correo electrónico
-        userCredential = await auth.signInWithEmailAndPassword(
-          email: widget.loginFactor,
+      if (widget.emailOrPhone.contains('@')) {
+        // Registrar con correo electrónico
+        userCredential = await auth.createAccount(
+          email: widget.emailOrPhone,
+          username: widget.name,
           password: password,
-        );
-      } else if (RegExp(r'^\+?[0-9]{10,15}$').hasMatch(widget.loginFactor)) {
-        // Autenticación con número de teléfono (suponiendo que el número se ha guardado como email@phone.com)
-        userCredential = await auth.signInWithEmailAndPassword(
-          email: '${widget.loginFactor}@phoneauth.com',
-          password: password,
+          phone: '', // Si no se proporciona el teléfono
+          birth: widget.birth,
         );
       } else {
-        // Autenticación con nombre de usuario no implementada en este ejemplo
-        setState(() {
-          _errorText = 'Autenticación con nombre de usuario no implementada';
-        });
-        return;
+        // Registrar con número de teléfono
+        userCredential = await auth.createAccount(
+          email: '', // Si no se proporciona el correo electrónico
+          phone: widget.emailOrPhone,
+          username: widget.name,
+          password: password,
+          birth: widget.birth,
+        );
       }
 
       if (userCredential != null) {
         setState(() {
           _errorText = null;
+          // Navegar a la pantalla principal o mostrar un mensaje de éxito
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -64,13 +73,12 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
         });
       } else {
         setState(() {
-          _errorText = 'Error al iniciar sesión';
+          _errorText = 'Error al crear la cuenta';
         });
       }
     } catch (e) {
-      print('Error al iniciar sesión: $e');
       setState(() {
-        _errorText = 'Error al iniciar sesión: $e';
+        _errorText = 'Error al crear la cuenta: $e';
       });
     }
   }
@@ -86,13 +94,14 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     return Scaffold(
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HeaderWidget(showButton: true, iconType: 'back'),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
               child: Text(
-                "Enter your password",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                "Create a password",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
             Padding(
@@ -122,8 +131,8 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
               child: Container(),
             ),
             LoginFooter(
-              buttonType: 'login',
-              onPressed: _handleLogin,
+              buttonType: 'register',
+              onPressed: _handleRegister,
             ),
           ],
         ),
