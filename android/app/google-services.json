@@ -12,7 +12,20 @@
           "package_name": "com.example.smartup_challenge"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "480471654399-360lmfd7svlq77kho09e4cvqbr2kuueh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartup_challenge",
+            "certificate_hash": "6e1eafa6244257079a5e15be75bcb1dd60a37c04"
+          }
+        },
+        {
+          "client_id": "480471654399-5659jp60ovrn2fvilkd19ir3hh7vcd2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAOtJR4ay3Nnc3LHMW5sbaGsSeGQaJtlpo"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480471654399-5659jp60ovrn2fvilkd19ir3hh7vcd2q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "480471654399-6j4f8udb66jed5o0bph8q6jk86eehb0g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartupChallenge"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +56,20 @@
           "package_name": "com.example.smartupchallenge"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "480471654399-p9umao7mrvbm12rpfoitrp527k4iqjlh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartupchallenge",
+            "certificate_hash": "6e1eafa6244257079a5e15be75bcb1dd60a37c04"
+          }
+        },
+        {
+          "client_id": "480471654399-5659jp60ovrn2fvilkd19ir3hh7vcd2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAOtJR4ay3Nnc3LHMW5sbaGsSeGQaJtlpo"
@@ -39,7 +77,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480471654399-5659jp60ovrn2fvilkd19ir3hh7vcd2q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "480471654399-6j4f8udb66jed5o0bph8q6jk86eehb0g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartupChallenge"
+              }
+            }
+          ]
         }
       }
     }

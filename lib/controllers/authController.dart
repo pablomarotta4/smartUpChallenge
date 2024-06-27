@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,7 +9,7 @@ class AuthController with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   User? _user;
-  final UserRepository _userRepository = UserRepository(FirebaseFirestore.instance); 
+  final UserRepository _userRepository = UserRepository(FirebaseFirestore.instance);
 
   User? get user => _user;
 
@@ -22,6 +20,10 @@ class AuthController with ChangeNotifier {
   void _onAuthStateChanged(User? user) {
     _user = user;
     notifyListeners();
+  }
+
+  Future<void> phoneAuthentication(String phone) async {
+    await _userRepository.phoneAuthentication(phone);
   }
 
   Future<User?> signInWithGoogle() async {
@@ -66,6 +68,7 @@ class AuthController with ChangeNotifier {
     required String password,
     required String username,
     required String birth,
+    BuildContext? context,
   }) async {
     try {
       bool emailExists = email != null && await checkIfEmailExists(email);
@@ -84,8 +87,9 @@ class AuthController with ChangeNotifier {
           password: password,
         );
       } else if (phone != null && phone.isNotEmpty) {
+        await phoneAuthentication(phone);
         userCredential = await _auth.createUserWithEmailAndPassword(
-          email: '$phone@phoneauth.com', // truco
+          email: '$phone@phoneauth.com',
           password: password,
         );
       } else {
@@ -96,7 +100,8 @@ class AuthController with ChangeNotifier {
         username: username,
         email: email ?? '',
         phone: phone ?? '',
-        birth: birth, password: '',
+        birth: birth,
+        password: '',
       );
 
       await _userRepository.createUser(userModel);
@@ -115,38 +120,34 @@ class AuthController with ChangeNotifier {
     }
   }
 
+
+  Future<bool> verifyOTP(String otp) async {
+    return await _userRepository.verifyOTP(otp);
+  }
+
+
   Future<bool> checkIfEmailExists(String email) async {
-    final List<String> signInMethods = await _auth.fetchSignInMethodsForEmail(email);
-    return signInMethods.isNotEmpty;
+    return (await _userRepository.checkIfEmailExists(email)).docs.isNotEmpty;
   }
 
   Future<bool> checkIfPhoneExists(String phone) async {
-    final QuerySnapshot result = await _userRepository.checkIfPhoneExists(phone);
-    return result.docs.isNotEmpty;
+    return (await _userRepository.checkIfPhoneExists(phone)).docs.isNotEmpty;
   }
 
   Future<bool> checkIfUsernameExists(String username) async {
-    final QuerySnapshot result = await _userRepository.checkIfUsernameExists(username);
-    return result.docs.isNotEmpty;
+    return (await _userRepository.checkIfUsernameExists(username)).docs.isNotEmpty;
   }
 
-  Stream<User?> authStateChanges() {
+  authStateChanges() {
     return _auth.authStateChanges();
   }
 
-  Future<UserCredential> signInWithEmailAndPassword({required String email, required String password}) {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<bool> checkIfEmailOrPhoneOrUsernameExists(String tokenAccess) async {
+    final result = await _userRepository.checkIfEmailOrPhoneOrUsernameExists(tokenAccess);
+    return result.docs.isNotEmpty;
   }
 
-  Future<bool> checkIfEmailOrPhoneOrUsernameExists({String? email, String? phone, String? username}) async {
-    if (email != null && email.isNotEmpty) {
-      return await checkIfEmailExists(email);
-    } else if (phone != null && phone.isNotEmpty) {
-      return await checkIfPhoneExists(phone);
-    } else if (username != null && username.isNotEmpty) {
-      return await checkIfUsernameExists(username);
-    } else {
-      return false;
-    }
+  Future<UserCredential> signInWithEmailAndPassword( {required String email, required String password}) async {
+    return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 }

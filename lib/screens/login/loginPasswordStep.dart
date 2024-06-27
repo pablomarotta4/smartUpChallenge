@@ -30,23 +30,22 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     final auth = Provider.of<AuthController>(context, listen: false);
 
     try {
-      UserCredential loginSuccess;
+      UserCredential? loginSuccess;
       if (widget.loginFactor.contains('@')) {
+        String email = widget.loginFactor;
         loginSuccess = await auth.signInWithEmailAndPassword(
-          email: widget.loginFactor,
+          email: email,
           password: password,
         );
-      } else if (RegExp(r'^\+?[0-9]{10,15}$').hasMatch(widget.loginFactor)) {
-        // implementar logica de authenticacion con tel
-        print("Autenticación con teléfono no implementada en este ejemplo");
-        return;
-      } else {
-        // implementar logica de inicio de sesion con username
-        print("Autenticación con nombre de usuario no implementada en este ejemplo");
-        return;
+      } else if (widget.loginFactor.contains('+')) {
+        String phone = widget.loginFactor;
+        await auth.phoneAuthentication(phone);
+      }
+      else{
+        //Implement
       }
 
-      if (mounted) {
+      if (mounted && loginSuccess != null && loginSuccess.user != null) {
         setState(() {
           _errorText = null;
           Navigator.push(
@@ -56,13 +55,15 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
             ),
           );
         });
-      }
-    } catch (e) {
-      if (mounted) {
+      } else {
         setState(() {
           _errorText = 'Error al iniciar sesión';
         });
       }
+    } catch (e) {
+      setState(() {
+        _errorText = 'Error al iniciar sesión';
+      });
       print('Error al iniciar sesión: $e');
     }
   }
@@ -81,10 +82,14 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
           children: [
             HeaderWidget(showButton: true, iconType: 'back'),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-              child: Text(
-                "Enter your password",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Enter your password",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.start,
+                ),
               ),
             ),
             Padding(

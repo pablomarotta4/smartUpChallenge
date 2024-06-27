@@ -21,11 +21,7 @@ class _LoginState extends State<Login> {
     final auth = Provider.of<AuthController>(context, listen: false);
 
     try {
-      bool exists = await auth.checkIfEmailOrPhoneOrUsernameExists(
-        email: input,
-        phone: input,
-        username: input,
-      );
+      bool exists = await auth.checkIfEmailOrPhoneOrUsernameExists(input);
 
       setState(() {
         if (exists) {
@@ -58,6 +54,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HeaderWidget(showButton: true, iconType: 'close'),
             const Padding(
