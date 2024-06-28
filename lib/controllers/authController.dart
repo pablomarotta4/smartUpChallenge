@@ -1,17 +1,19 @@
-import 'dart:ffi';
+// ignore_for_file: file_names, deprecated_member_use, empty_catches
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:smartup_challenge/models/userModel.dart';
-import 'package:smartup_challenge/repository/userRepository.dart';
+import 'package:intl/intl.dart';
+import 'package:smartup_challenge/models/user_model.dart';
+import 'package:smartup_challenge/repository/user_repository.dart';
+import 'package:smartup_challenge/screens/authenticate/verifyPhonePage.dart';
 
 class AuthController with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   User? _user;
-  final UserRepository _userRepository = UserRepository(FirebaseFirestore.instance); 
+  final UserRepository _userRepository = UserRepository(FirebaseFirestore.instance);
 
   User? get user => _user;
 
@@ -40,17 +42,17 @@ class AuthController with ChangeNotifier {
       if (userCredential.additionalUserInfo!.isNewUser) {
         final user = userCredential.user!;
         final userModel = UserModel(
-          username: user.displayName ?? '',
-          email: user.email ?? '',
-          phone: user.phoneNumber ?? '',
-          birth: '', password: '', 
+          username: _generateUsername(user.displayName ?? '', user.metadata.creationTime.toString()),
+          emailOrPhone: user.email ?? user.phoneNumber ?? '',
+          birth: '', password: '',
+          uid: user.uid,
+          name: user.displayName ?? '',
         );
         await _userRepository.createUser(userModel);
       }
 
       return userCredential.user;
     } catch (e) {
-      print('Error signing in with Google: $e');
       return null;
     }
   }
@@ -58,48 +60,82 @@ class AuthController with ChangeNotifier {
   Future<void> signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
+    _user = null;
+    notifyListeners();
   }
 
   Future<UserCredential?> createAccount({
-    String? email,
-    String? phone,
+    required String emailOrPhone,
     required String password,
     required String username,
     required String birth,
+    required BuildContext context,
   }) async {
     try {
-      bool emailExists = email != null && await checkIfEmailExists(email);
-      bool phoneExists = phone != null && await checkIfPhoneExists(phone);
+      bool emailExists = emailOrPhone.contains('@') ? await checkIfEmailExists(emailOrPhone) : false;
+      bool phoneExists = emailOrPhone.contains('@') ? false : await checkIfPhoneExists(emailOrPhone);
       bool usernameExists = await checkIfUsernameExists(username);
 
       if (emailExists || phoneExists || usernameExists) {
         return Future.error('The email, phone number, or username is already in use.');
       }
 
-      UserCredential userCredential;
+      UserCredential? userCredential;
 
-      if (email != null && email.isNotEmpty) {
+      if (emailOrPhone.contains('@')) {
         userCredential = await _auth.createUserWithEmailAndPassword(
-          email: email,
+          email: emailOrPhone,
           password: password,
         );
-      } else if (phone != null && phone.isNotEmpty) {
-        userCredential = await _auth.createUserWithEmailAndPassword(
-          email: '$phone@phoneauth.com', // truco
-          password: password,
+      } else if (emailOrPhone.contains("+") && emailOrPhone.isNotEmpty) {
+        await _auth.verifyPhoneNumber(
+          phoneNumber: emailOrPhone,
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            userCredential = await _auth.signInWithCredential(credential);
+            if (userCredential != null) {
+              final userModel = UserModel(
+                username: _generateUsername(username, birth),
+                emailOrPhone: emailOrPhone,
+                birth: birth,
+                password: '',
+                uid: userCredential!.user!.uid,
+                name: username,
+              );
+              await _userRepository.createUser(userModel);
+            }
+          },
+          verificationFailed: (FirebaseAuthException error) {
+          },
+          codeSent: (String verificationId, int? forceResendingToken) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifyPhonePage(
+                  verificationId: verificationId,
+                  phone: emailOrPhone,
+                ),
+              ),
+            );
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {
+          },
         );
       } else {
         return Future.error('Email or phone number must be provided.');
       }
 
-      final userModel = UserModel(
-        username: username,
-        email: email ?? '',
-        phone: phone ?? '',
-        birth: birth, password: '',
-      );
+      if (userCredential != null) {
+        final userModel = UserModel(
+          username: _generateUsername(username, birth),
+          emailOrPhone: emailOrPhone,
+          birth: birth,
+          password: '',
+          uid: userCredential!.user!.uid,
+          name: username,
+        );
 
-      await _userRepository.createUser(userModel);
+        await _userRepository.createUser(userModel);
+      }
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
@@ -113,6 +149,13 @@ class AuthController with ChangeNotifier {
     } catch (e) {
       return Future.error(e.toString());
     }
+  }
+
+  String _generateUsername(String name, String birth) {
+    String formattedName = name.toLowerCase().replaceAll(' ', '');
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('yyyyMMddHHmm').format(now);
+    return '$formattedName$formattedDate';
   }
 
   Future<bool> checkIfEmailExists(String email) async {
@@ -147,6 +190,45 @@ class AuthController with ChangeNotifier {
       return await checkIfUsernameExists(username);
     } else {
       return false;
+    }
+  }
+
+  Future<void> registerWithPhone({required String phone, required String verificationId, required String smsCode, required String emailOrPhone, required String username, required String birth, required BuildContext context}) async {
+    UserCredential? userCredential;
+    try {
+      await _auth.verifyPhoneNumber(
+          phoneNumber: emailOrPhone,
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            userCredential = await _auth.signInWithCredential(credential);
+            if (userCredential != null) {
+              final userModel = UserModel(
+                username: _generateUsername(username, birth),
+                emailOrPhone: emailOrPhone,
+                birth: birth,
+                password: '',
+                uid: userCredential!.user!.uid,
+                name: username,
+              );
+              await _userRepository.createUser(userModel);
+            }
+          },
+          verificationFailed: (FirebaseAuthException error) {
+          },
+          codeSent: (String verificationId, int? forceResendingToken) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifyPhonePage(
+                  verificationId: verificationId,
+                  phone: emailOrPhone,
+                ),
+              ),
+            );
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {
+          },
+        );
+    } catch (e) {
     }
   }
 }

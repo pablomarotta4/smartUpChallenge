@@ -44,7 +44,7 @@ class SmallButton extends StatelessWidget {
         buttonData['text'],
         style: TextStyle(
           color: buttonData['textColor'],
-          fontSize: 14,
+          fontSize: 13,
         ),
       ),
     );

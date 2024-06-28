@@ -6,11 +6,11 @@ class StoryItem extends StatelessWidget {
   final bool isAddButton;
 
   const StoryItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.imageUrl,
     this.isAddButton = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +19,9 @@ class StoryItem extends StatelessWidget {
         Stack(
           children: [
             Container(
-              margin: EdgeInsets.all(8.0),
-              width: 70,
-              height: 70,
+              margin: const EdgeInsets.all(8.0),
+              width: 65,
+              height: 65,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.blue, width: 3),
@@ -38,16 +38,16 @@ class StoryItem extends StatelessWidget {
                 child: Container(
                   width: 24,
                   height: 24,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.blue,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.add, color: Colors.white, size: 16),
+                  child: const Icon(Icons.add, color: Colors.white, size: 16),
                 ),
               ),
           ],
         ),
-        Text(name, style: TextStyle(color: Colors.white)),
+        Text(name, style: const TextStyle(color: Color.fromARGB(255, 163, 163, 163))),
       ],
     );
   }

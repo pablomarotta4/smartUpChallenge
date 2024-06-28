@@ -30,10 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  font_awesome_flutter: ^10.3.0
   cupertino_icons: ^1.0.6
   firebase_core: ^3.1.0
   firebase_auth: ^5.1.0
@@ -41,10 +38,12 @@ dependencies:
   google_sign_in: ^5.2.4
   provider: ^6.0.1
   get: ^4.3.8
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+    
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -69,6 +68,7 @@ flutter:
     - assets/icons/twitter.png
     - assets/icons/google.png
     - assets/icons/birdhouse.png
+    - assets/images/defaultUserImage.png
  
 
   # An image asset can refer to one or more resolution-specific "variants", see

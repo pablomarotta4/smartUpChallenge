@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smartup_challenge/screens/home/home.dart';
-import 'package:smartup_challenge/screens/widgets/header.dart';
-import 'package:smartup_challenge/screens/widgets/loginFooter.dart';
-import 'package:smartup_challenge/controllers/authController.dart';
 import 'package:provider/provider.dart';
+import 'package:smartup_challenge/controllers/authController.dart';
+import 'package:smartup_challenge/screens/widgets/divider.dart';
+import 'package:smartup_challenge/screens/widgets/header.dart';
+import 'package:smartup_challenge/screens/home/home.dart';
+import 'package:smartup_challenge/screens/widgets/registerFooter.dart';
 
 class RegisterPasswordStep extends StatefulWidget {
   final String name;
@@ -12,13 +13,14 @@ class RegisterPasswordStep extends StatefulWidget {
   final String birth;
 
   const RegisterPasswordStep({
-    Key? key,
+    super.key,
     required this.name,
     required this.emailOrPhone,
     required this.birth,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _RegisterPasswordStepState createState() => _RegisterPasswordStepState();
 }
 
@@ -33,39 +35,24 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
     });
   }
 
-  void _handleRegister() async {
+  Future<void> _handleRegisterEmail(BuildContext context) async {
     final auth = Provider.of<AuthController>(context, listen: false);
     String password = _passwordController.text;
 
     try {
-      UserCredential? userCredential;
-
-      if (widget.emailOrPhone.contains('@')) {
-        userCredential = await auth.createAccount(
-          email: widget.emailOrPhone,
-          username: widget.name,
-          password: password,
-          birth: widget.birth,
-        );
-      } else {
-        userCredential = await auth.createAccount(
-          phone: widget.emailOrPhone,
-          username: widget.name,
-          password: password,
-          birth: widget.birth,
-        );
-      }
+      UserCredential? userCredential = await auth.createAccount(
+        emailOrPhone: widget.emailOrPhone,
+        username: widget.name,
+        password: password,
+        birth: widget.birth,
+        context: context,
+      );
 
       if (userCredential != null) {
-        setState(() {
-          _errorText = null;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Home(),
-            ),
-          );
-        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
       } else {
         setState(() {
           _errorText = 'Error al crear la cuenta';
@@ -74,6 +61,36 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
     } catch (e) {
       setState(() {
         _errorText = 'Error al crear la cuenta: $e';
+      });
+    }
+  }
+
+  Future<void> _handleRegisterPhone(BuildContext context) async {
+    final auth = Provider.of<AuthController>(context, listen: false);
+
+    try {
+      await auth.createAccount(
+        emailOrPhone: widget.emailOrPhone,
+        username: widget.name,
+        password: _passwordController.text,
+        birth: widget.birth,
+        context: context,
+      );
+    } catch (e) {
+      setState(() {
+        _errorText = 'Error al crear la cuenta: $e';
+      });
+    }
+  }
+
+  void _handleRegister() {
+    if (widget.emailOrPhone.contains('@')) {
+      _handleRegisterEmail(context);
+    } else if (widget.emailOrPhone.contains('+')) {
+      _handleRegisterPhone(context);
+    } else {
+      setState(() {
+        _errorText = 'Email or phone number is invalid';
       });
     }
   }
@@ -125,7 +142,8 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
             Expanded(
               child: Container(),
             ),
-            LoginFooter(
+            CustomDivider(),
+            RegisterFooter(
               buttonType: 'register',
               onPressed: _handleRegister,
             ),

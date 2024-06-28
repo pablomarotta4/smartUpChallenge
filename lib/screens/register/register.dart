@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
+import 'package:smartup_challenge/screens/authenticate/verifyPhonePage.dart';
+import 'package:smartup_challenge/screens/widgets/divider.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/register/registerPasswordStep.dart';
+import 'package:smartup_challenge/screens/widgets/registerFooter.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -44,21 +47,26 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         );
       }
-    } else if (await auth.checkIfPhoneExists(emailOrPhone)) {
-      setState(() {
-        _errorText = 'Phone number already exists';
-      });
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RegisterPasswordStep(
-            name: name,
-            emailOrPhone: emailOrPhone,
-            birth: birth,
+    } else if (emailOrPhone.contains('+')) {
+      if (await auth.checkIfPhoneExists(emailOrPhone)) {
+        setState(() {
+          _errorText = 'Phone number already exists';
+        });
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerifyPhonePage(
+              phone: emailOrPhone,
+              verificationId: '',
+            ),
           ),
-        ),
-      );
+        );
+      }
+    } else {
+      setState(() {
+        _errorText = 'Invalid phone number or email address';
+      });
     }
   }
 
@@ -137,21 +145,10 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             Expanded(child: Container()),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    onPressed: _nextStep,
-                    child: const Text("Next"),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Colors.blue, shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(20), 
-                    ),
-                  ),
-                ],
-              ),
+            CustomDivider(),
+            RegisterFooter(
+              onPressed: _nextStep,
+              buttonType: "next",
             ),
           ],
         ),

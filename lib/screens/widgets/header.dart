@@ -19,7 +19,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -29,7 +29,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                     if (widget.iconType == 'close') {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => WelcomePage()),
+                        MaterialPageRoute(builder: (context) => const WelcomePage()),
                         (Route<dynamic> route) => false,
                       );
                     } else {
@@ -40,7 +40,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 )
               : Container(),
           Image.asset('assets/icons/twitter.png', height: 35, width: 35),
-          SizedBox(width: 24), 
+          const SizedBox(width: 24), 
         ],
       ),
     );

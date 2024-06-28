@@ -1,25 +1,28 @@
 class UserModel {
   final String username;
   final String password;
-  final String email;
-  final String phone;
+  final String emailOrPhone;
   final String birth;
+  final String uid;
+  final String name;
 
   const UserModel({
     required this.username,
     required this.password,
-    required this.email,
-    required this.phone,
+    required this.emailOrPhone,
     required this.birth,
+    required this.uid,
+    required this.name,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'username': username,
       'password': password,
-      'email': email,
-      'phone': phone,
+      'email or phone': emailOrPhone,
       'birth': birth,
+      'uid': uid,
+      'name': name,
     };
   }
 
@@ -27,9 +30,10 @@ class UserModel {
     return UserModel(
       username: map['username'] as String,
       password: map['password'] as String,
-      email: map['email'] as String,
-      phone: map['phone'] as String,
-      birth: map['birth'] as String
+      emailOrPhone: map['emailOrPhone'] as String,
+      birth: map['birth'] as String,
+      uid: map['uid'] as String,
+      name: map['name'] as String,
     );
   }
 }

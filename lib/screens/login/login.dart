@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartup_challenge/screens/login/loginPasswordStep.dart';
+import 'package:smartup_challenge/screens/widgets/divider.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/loginFooter.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
@@ -85,6 +86,7 @@ class _LoginState extends State<Login> {
             Expanded(
               child: Container(),
             ),
+            CustomDivider(),
             LoginFooter(
               buttonType: 'next',
               onPressed: _handleNext,

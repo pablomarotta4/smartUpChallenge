@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -25,7 +27,6 @@ class Authenticate {
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
       return userCredential.user;
     } catch (e) {
-      print('Error signing in with Google: $e');
       return null;
     }
   }
@@ -51,7 +52,6 @@ class Authenticate {
             await _auth.signInWithCredential(credential);
           },
           verificationFailed: (FirebaseAuthException e) {
-            print('Phone number verification failed: ${e.message}');
           },
           codeSent: (String verificationId, int? resendToken) {
             // se necesita enviar el codigo de telefono
@@ -76,7 +76,6 @@ class Authenticate {
     try {
       if (email != null && email.isNotEmpty) {
         final List<String> signInMethods = await _auth.fetchSignInMethodsForEmail(email);
-        print('Sign-in methods for $email: $signInMethods'); 
         return signInMethods.isNotEmpty;
       } else if (phone != null && phone.isNotEmpty) {
         // Implementar
@@ -87,7 +86,6 @@ class Authenticate {
       }
       return false;
     } catch (e) {
-      print('Error checking if email, phone, or username exists: $e');
       return false;
     }
   }

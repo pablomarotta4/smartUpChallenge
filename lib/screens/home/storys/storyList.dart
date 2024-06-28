@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:smartup_challenge/screens/home/storys/story.dart';
 
@@ -13,8 +15,8 @@ class StoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 110,
+    return SizedBox(
+      height: 101,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: stories.length,

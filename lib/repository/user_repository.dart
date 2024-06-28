@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:smartup_challenge/models/userModel.dart';
+import 'package:smartup_challenge/models/user_model.dart';
 
 class UserRepository {
   final FirebaseFirestore _firestore;
@@ -8,7 +8,7 @@ class UserRepository {
 
   Future<void> createUser(UserModel user) async {
     try {
-      await _firestore.collection('users').doc(user.email.isNotEmpty ? user.email : user.phone).set(user.toMap());
+      await _firestore.collection('users').doc(user.emailOrPhone).set(user.toMap());
     } catch (e) {
       throw Exception('Error creating user: $e');
     }
@@ -20,10 +20,11 @@ class UserRepository {
       if (doc.exists) {
         return UserModel(
           username: doc['username'],
-          email: doc['email'],
-          phone: doc['phone'],
+          emailOrPhone: doc['emailOrPhone'],
           birth: doc['birth'],
           password: '',
+          uid: doc['uid'],
+          name: doc['name'],
         );
       }
       return null;
@@ -34,7 +35,7 @@ class UserRepository {
 
   Future<void> updateUser(UserModel user) async {
     try {
-      await _firestore.collection('users').doc(user.email.isNotEmpty ? user.email : user.phone).update(user.toMap());
+      await _firestore.collection('users').doc(user.emailOrPhone).update(user.toMap());
     } catch (e) {
       throw Exception('Error updating user: $e');
     }
@@ -58,6 +59,14 @@ class UserRepository {
 
   Future<QuerySnapshot> checkIfPhoneExists(String phone) async {
     return await _firestore.collection('users').where('phone', isEqualTo: phone).get();
+  }
+
+  getUserByUid(String uid) {
+    return _firestore.collection('users').doc(uid).get();
+  }
+
+  getUserByEmailOrPhone(String emailOrPhone) {
+    return _firestore.collection('users').doc(emailOrPhone).get();
   }
   
 }

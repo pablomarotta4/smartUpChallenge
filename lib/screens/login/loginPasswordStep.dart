@@ -1,6 +1,8 @@
+// ignore_for_file: file_names, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartup_challenge/screens/home/home.dart';
+import 'package:smartup_challenge/screens/widgets/divider.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/loginFooter.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
@@ -8,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class EnterPasswordPage extends StatefulWidget {
   final String loginFactor;
-  const EnterPasswordPage({Key? key, required this.loginFactor}) : super(key: key);
+  const EnterPasswordPage({super.key, required this.loginFactor});
 
   @override
   _EnterPasswordPageState createState() => _EnterPasswordPageState();
@@ -26,23 +28,15 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
   }
 
   void _handleLogin() async {
-    String password = _passwordController.text;
-    final auth = Provider.of<AuthController>(context, listen: false);
+    Provider.of<AuthController>(context, listen: false);
 
     try {
-      UserCredential loginSuccess;
       if (widget.loginFactor.contains('@')) {
-        loginSuccess = await auth.signInWithEmailAndPassword(
-          email: widget.loginFactor,
-          password: password,
-        );
       } else if (RegExp(r'^\+?[0-9]{10,15}$').hasMatch(widget.loginFactor)) {
         // implementar logica de authenticacion con tel
-        print("Autenticación con teléfono no implementada en este ejemplo");
         return;
       } else {
         // implementar logica de inicio de sesion con username
-        print("Autenticación con nombre de usuario no implementada en este ejemplo");
         return;
       }
 
@@ -63,7 +57,6 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
           _errorText = 'Error al iniciar sesión';
         });
       }
-      print('Error al iniciar sesión: $e');
     }
   }
 
@@ -113,6 +106,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
             Expanded(
               child: Container(),
             ),
+            const CustomDivider(),
             LoginFooter(
               buttonType: 'login',
               onPressed: _handleLogin,

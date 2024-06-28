@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously, file_names
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/widgets/roundedButton.dart';
 import 'package:smartup_challenge/screens/widgets/welcomePageFooter.dart';
@@ -8,7 +11,7 @@ import 'package:smartup_challenge/controllers/authController.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({super.key});
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
@@ -29,7 +32,6 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthController>(context);
-    final User? user = auth.user;
 
     return Scaffold(
       body: SafeArea(
@@ -58,7 +60,10 @@ class _WelcomePageState extends State<WelcomePage> {
                       onPressed: () async {
                         User? user = await auth.signInWithGoogle();
                         if (user != null) {
-                          // logica exitosa
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Home()),
+                          );
                         } else {
                           Navigator.push(
                             context,
