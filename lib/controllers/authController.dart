@@ -5,13 +5,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:smartup_challenge/models/user_model.dart';
 import 'package:smartup_challenge/repository/user_repository.dart';
-import 'package:smartup_challenge/screens/authenticate/verifyPhonePage.dart';
 
 class AuthController with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   User? _user;
-  UserModel? activeUser;
   final UserRepository _userRepository = UserRepository(FirebaseFirestore.instance);
 
   User? get user => _user;
@@ -22,11 +20,6 @@ class AuthController with ChangeNotifier {
 
   void _onAuthStateChanged(User? user) async {
     _user = user;
-    if (user != null) {
-      activeUser = await _userRepository.getUserByUid(user.uid);
-    } else {
-      activeUser = null;
-    }
     notifyListeners();
   }
 
@@ -34,13 +27,15 @@ class AuthController with ChangeNotifier {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return null;
+        return null; // Si el usuario cancela el proceso de inicio de sesión.
       }
+
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
 
       if (userCredential.additionalUserInfo!.isNewUser) {
@@ -48,18 +43,17 @@ class AuthController with ChangeNotifier {
         final userModel = UserModel(
           username: _generateUsername(user.displayName ?? '', user.metadata.creationTime.toString()),
           emailOrPhone: user.email ?? user.phoneNumber ?? '',
-          birth: '', password: '',
+          birth: '',
+          password: '',
           uid: user.uid,
           name: user.displayName ?? '',
         );
         await _userRepository.createUser(userModel);
-        activeUser = userModel;
-      } else {
-        activeUser = await _userRepository.getUser(userCredential.user!.email.toString());
       }
 
       return userCredential.user;
     } catch (e) {
+      print('Error signing in with Google: $e');
       return null;
     }
   }
@@ -68,7 +62,6 @@ class AuthController with ChangeNotifier {
     await _auth.signOut();
     await _googleSignIn.signOut();
     _user = null;
-    activeUser = null;
     notifyListeners();
   }
 
@@ -110,22 +103,13 @@ class AuthController with ChangeNotifier {
                 name: username,
               );
               await _userRepository.createUser(userModel);
-              activeUser = userModel;
             }
           },
           verificationFailed: (FirebaseAuthException error) {
             throw Exception(error.message ?? 'Verification failed');
           },
           codeSent: (String verificationId, int? forceResendingToken) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VerifyPhonePage(
-                  verificationId: verificationId,
-                  phone: emailOrPhone,
-                ),
-              ),
-            );
+            // Aquí podrías redirigir a la página de verificación de teléfono
           },
           codeAutoRetrievalTimeout: (String verificationId) {
             return;
@@ -146,7 +130,6 @@ class AuthController with ChangeNotifier {
         );
 
         await _userRepository.createUser(userModel);
-        activeUser = userModel;
       }
 
       return userCredential;
@@ -189,9 +172,6 @@ class AuthController with ChangeNotifier {
   Future<UserCredential> signInWithEmailAndPassword({required String email, required String password}) async {
     final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
     _user = userCredential.user;
-    if (_user != null) {
-      activeUser = await _userRepository.getUser(email);
-    }
     notifyListeners();
     return userCredential;
   }
@@ -219,5 +199,4 @@ class AuthController with ChangeNotifier {
       return false;
     }
   }
-
 }

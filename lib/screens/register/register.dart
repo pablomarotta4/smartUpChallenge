@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
-import 'package:smartup_challenge/screens/authenticate/verifyPhonePage.dart';
 import 'package:smartup_challenge/screens/widgets/divider.dart';
 import 'package:smartup_challenge/screens/widgets/header.dart';
 import 'package:smartup_challenge/screens/register/registerPasswordStep.dart';
@@ -55,15 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _errorText = 'Phone number already exists';
         });
       } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VerifyPhonePage(
-              phone: emailOrPhone,
-              verificationId: '',
-            ),
-          ),
-        );
+
       }
     } else {
       setState(() {

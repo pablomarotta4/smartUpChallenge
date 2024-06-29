@@ -32,6 +32,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthController()),
+        
       ],
       child: MaterialApp(
         theme: ThemeData(

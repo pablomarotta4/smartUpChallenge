@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/screens/widgets/smallButton.dart';
 
 class DrawerTopBar extends StatelessWidget {
@@ -15,8 +16,11 @@ class DrawerTopBar extends StatelessWidget {
         children: [
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
             },
           ),
           SmallButton(

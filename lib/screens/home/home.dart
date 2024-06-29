@@ -1,12 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
 import 'package:smartup_challenge/screens/home/drawer/drawer.dart';
+import 'package:smartup_challenge/screens/home/tweets/tweets.dart';
 import 'package:smartup_challenge/screens/widgets/divider.dart';
 import 'package:smartup_challenge/screens/widgets/homeTopBar.dart';
 import 'package:smartup_challenge/screens/widgets/homeBottomBar.dart';
 import 'package:smartup_challenge/screens/home/storys/storyList.dart';
-import 'package:smartup_challenge/screens/home/tweets/tweetsList.dart'; 
 import 'package:smartup_challenge/screens/widgets/flyingDrawerButton.dart'; 
 
 class Home extends StatelessWidget {
@@ -24,7 +23,7 @@ class Home extends StatelessWidget {
             children: [
               StoryList(),
               const CustomDivider(thickness: 0.5),
-              const Expanded(child: TweetsList()),
+              const Expanded(child: Tweets()),
             ],
           ),
           Positioned(

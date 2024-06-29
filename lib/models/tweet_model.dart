@@ -1,22 +1,22 @@
 class TweetModel {
   final String tweetContent;
   final String timestamp;
-  final String userId;
-  final String username;
+  final String creator;
+  final String uid;
 
   TweetModel({
     required this.tweetContent,
     required this.timestamp,
-    required this.userId,
-    required this.username,
+    required this.creator,
+    required this.uid,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'tweetContent': tweetContent,
       'timestamp': timestamp,
-      'userId': userId,
-      'username': username,
+      'userId': creator,
+      'username': uid,
     };
   }
 
@@ -24,8 +24,8 @@ class TweetModel {
     return TweetModel(
       tweetContent: map['content'] as String,
       timestamp: map['timestamp'] as String,
-      userId: map['userId'] as String,
-      username: map['username'] as String,
+      creator: map['creator'] as String,
+      uid: map['uid'] as String,
     );
   }
 }
