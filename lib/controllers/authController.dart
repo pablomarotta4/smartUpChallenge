@@ -1,5 +1,3 @@
-// ignore_for_file: file_names, deprecated_member_use, empty_catches
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +11,7 @@ class AuthController with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   User? _user;
+  UserModel? activeUser;
   final UserRepository _userRepository = UserRepository(FirebaseFirestore.instance);
 
   User? get user => _user;
@@ -21,8 +20,13 @@ class AuthController with ChangeNotifier {
     _auth.authStateChanges().listen(_onAuthStateChanged);
   }
 
-  void _onAuthStateChanged(User? user) {
+  void _onAuthStateChanged(User? user) async {
     _user = user;
+    if (user != null) {
+      activeUser = await _userRepository.getUserByUid(user.uid);
+    } else {
+      activeUser = null;
+    }
     notifyListeners();
   }
 
@@ -49,6 +53,9 @@ class AuthController with ChangeNotifier {
           name: user.displayName ?? '',
         );
         await _userRepository.createUser(userModel);
+        activeUser = userModel;
+      } else {
+        activeUser = await _userRepository.getUser(userCredential.user!.email.toString());
       }
 
       return userCredential.user;
@@ -61,6 +68,7 @@ class AuthController with ChangeNotifier {
     await _auth.signOut();
     await _googleSignIn.signOut();
     _user = null;
+    activeUser = null;
     notifyListeners();
   }
 
@@ -91,20 +99,22 @@ class AuthController with ChangeNotifier {
         await _auth.verifyPhoneNumber(
           phoneNumber: emailOrPhone,
           verificationCompleted: (PhoneAuthCredential credential) async {
-            userCredential = await _auth.signInWithCredential(credential);
-            if (userCredential != null) {
+            final userCredential = await _auth.signInWithCredential(credential);
+            if (userCredential.user != null) {
               final userModel = UserModel(
                 username: _generateUsername(username, birth),
                 emailOrPhone: emailOrPhone,
                 birth: birth,
                 password: '',
-                uid: userCredential!.user!.uid,
+                uid: userCredential.user!.uid,
                 name: username,
               );
               await _userRepository.createUser(userModel);
+              activeUser = userModel;
             }
           },
           verificationFailed: (FirebaseAuthException error) {
+            throw Exception(error.message ?? 'Verification failed');
           },
           codeSent: (String verificationId, int? forceResendingToken) {
             Navigator.push(
@@ -118,23 +128,25 @@ class AuthController with ChangeNotifier {
             );
           },
           codeAutoRetrievalTimeout: (String verificationId) {
+            return;
           },
         );
       } else {
         return Future.error('Email or phone number must be provided.');
       }
 
-      if (userCredential != null) {
+      if (userCredential != null && userCredential.user != null) {
         final userModel = UserModel(
           username: _generateUsername(username, birth),
           emailOrPhone: emailOrPhone,
           birth: birth,
           password: '',
-          uid: userCredential!.user!.uid,
+          uid: userCredential.user!.uid,
           name: username,
         );
 
         await _userRepository.createUser(userModel);
+        activeUser = userModel;
       }
 
       return userCredential;
@@ -159,26 +171,41 @@ class AuthController with ChangeNotifier {
   }
 
   Future<bool> checkIfEmailExists(String email) async {
-    final List<String> signInMethods = await _auth.fetchSignInMethodsForEmail(email);
-    return signInMethods.isNotEmpty;
+    return await _userRepository.checkIfEmailExists(email);
   }
 
   Future<bool> checkIfPhoneExists(String phone) async {
-    final QuerySnapshot result = await _userRepository.checkIfPhoneExists(phone);
-    return result.docs.isNotEmpty;
+    return await _userRepository.checkIfPhoneExists(phone);
   }
 
   Future<bool> checkIfUsernameExists(String username) async {
-    final QuerySnapshot result = await _userRepository.checkIfUsernameExists(username);
-    return result.docs.isNotEmpty;
+    return await _userRepository.checkIfUsernameExists(username);
   }
 
   Stream<User?> authStateChanges() {
     return _auth.authStateChanges();
   }
 
-  Future<UserCredential> signInWithEmailAndPassword({required String email, required String password}) {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> signInWithEmailAndPassword({required String email, required String password}) async {
+    final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    _user = userCredential.user;
+    if (_user != null) {
+      activeUser = await _userRepository.getUser(email);
+    }
+    notifyListeners();
+    return userCredential;
+  }
+
+  Future<String?> getUserName(String uid) async {
+    try {
+      final userDoc = await _userRepository.getUserByUid(uid);
+      if (userDoc != null) {
+        return userDoc.username;
+      }
+    } catch (e) {
+      print("Error getting username: $e");
+    }
+    return null;
   }
 
   Future<bool> checkIfEmailOrPhoneOrUsernameExists({String? email, String? phone, String? username}) async {
@@ -193,42 +220,4 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  Future<void> registerWithPhone({required String phone, required String verificationId, required String smsCode, required String emailOrPhone, required String username, required String birth, required BuildContext context}) async {
-    UserCredential? userCredential;
-    try {
-      await _auth.verifyPhoneNumber(
-          phoneNumber: emailOrPhone,
-          verificationCompleted: (PhoneAuthCredential credential) async {
-            userCredential = await _auth.signInWithCredential(credential);
-            if (userCredential != null) {
-              final userModel = UserModel(
-                username: _generateUsername(username, birth),
-                emailOrPhone: emailOrPhone,
-                birth: birth,
-                password: '',
-                uid: userCredential!.user!.uid,
-                name: username,
-              );
-              await _userRepository.createUser(userModel);
-            }
-          },
-          verificationFailed: (FirebaseAuthException error) {
-          },
-          codeSent: (String verificationId, int? forceResendingToken) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VerifyPhonePage(
-                  verificationId: verificationId,
-                  phone: emailOrPhone,
-                ),
-              ),
-            );
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {
-          },
-        );
-    } catch (e) {
-    }
-  }
 }

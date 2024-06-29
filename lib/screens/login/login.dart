@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartup_challenge/screens/login/loginPasswordStep.dart';
@@ -7,7 +9,7 @@ import 'package:smartup_challenge/screens/widgets/loginFooter.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   _LoginState createState() => _LoginState();
@@ -27,7 +29,7 @@ class _LoginState extends State<Login> {
         phone: input,
         username: input,
       );
-
+      
       setState(() {
         if (exists) {
           _errorText = null;

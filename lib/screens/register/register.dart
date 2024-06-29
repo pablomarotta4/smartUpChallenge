@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
@@ -8,7 +10,7 @@ import 'package:smartup_challenge/screens/register/registerPasswordStep.dart';
 import 'package:smartup_challenge/screens/widgets/registerFooter.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   _RegisterPageState createState() => _RegisterPageState();

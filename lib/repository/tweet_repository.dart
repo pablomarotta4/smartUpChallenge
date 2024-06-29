@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartup_challenge/models/tweet_model.dart';
 
@@ -8,7 +6,7 @@ class TweetRepository {
 
   Future<void> addTweet(TweetModel tweet) async {
     try {
-      var documentReference = await _firestore.collection('tweets').add(tweet.toMap());
+      await _firestore.collection('tweets').add(tweet.toMap());
     } catch (e) {
       throw Exception('Error adding tweet: $e');
     }

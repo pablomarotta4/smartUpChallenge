@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartup_challenge/models/user_model.dart';
 
 class UserRepository {
@@ -18,55 +19,60 @@ class UserRepository {
     try {
       final doc = await _firestore.collection('users').doc(emailOrPhone).get();
       if (doc.exists) {
-        return UserModel(
-          username: doc['username'],
-          emailOrPhone: doc['emailOrPhone'],
-          birth: doc['birth'],
-          password: '',
-          uid: doc['uid'],
-          name: doc['name'],
-        );
+        final data = doc.data();
+        if (data != null) {
+          return UserModel.fromMap(data);
+        } else {
+          print('Document data is null for emailOrPhone: $emailOrPhone');
+        }
+      } else {
+        print('No document found for emailOrPhone: $emailOrPhone');
       }
       return null;
     } catch (e) {
+      print('Error getting user: $e');
       throw Exception('Error getting user: $e');
     }
   }
 
-  Future<void> updateUser(UserModel user) async {
+
+  Future<UserModel?> getUserByUid(String uid) async {
     try {
-      await _firestore.collection('users').doc(user.emailOrPhone).update(user.toMap());
+      final querySnapshot = await _firestore.collection('users').where('uid', isEqualTo: uid).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return UserModel.fromMap(querySnapshot.docs.first.data());
+      }
+      return null;
     } catch (e) {
-      throw Exception('Error updating user: $e');
+      throw Exception('Error getting user by UID: $e');
     }
   }
 
-  Future<void> deleteUser(String emailOrPhone) async {
+  Future<bool> checkIfUsernameExists(String username) async {
     try {
-      await _firestore.collection('users').doc(emailOrPhone).delete();
+      final querySnapshot = await _firestore.collection('users').where('username', isEqualTo: username).get();
+      return querySnapshot.docs.isNotEmpty;
     } catch (e) {
-      throw Exception('Error deleting user: $e');
+      throw Exception('Error checking if username exists: $e');
     }
   }
 
-  Future<QuerySnapshot> checkIfUsernameExists(String username) async {
-    return await _firestore.collection('users').where('username', isEqualTo: username).get();
+  Future<bool> checkIfEmailExists(String email) async {
+    try {
+      final querySnapshot = await _firestore.collection('users').where('email or phone', isEqualTo: email).get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      throw Exception('Error checking if email exists: $e');
+    }
   }
 
-  Future<QuerySnapshot> checkIfEmailExists(String email) async {
-    return await _firestore.collection('users').where('email', isEqualTo: email).get();
+  Future<bool> checkIfPhoneExists(String phone) async {
+    try {
+      final querySnapshot = await _firestore.collection('users').where('email or phone', isEqualTo: phone).get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      throw Exception('Error checking if phone exists: $e');
+    }
   }
 
-  Future<QuerySnapshot> checkIfPhoneExists(String phone) async {
-    return await _firestore.collection('users').where('phone', isEqualTo: phone).get();
-  }
-
-  getUserByUid(String uid) {
-    return _firestore.collection('users').doc(uid).get();
-  }
-
-  getUserByEmailOrPhone(String emailOrPhone) {
-    return _firestore.collection('users').doc(emailOrPhone).get();
-  }
-  
 }

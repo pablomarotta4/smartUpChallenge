@@ -1,34 +1,43 @@
-// ignore_for_file: file_names
-
 import 'package:get/get.dart';
 import 'package:smartup_challenge/models/tweet_model.dart';
 import 'package:smartup_challenge/repository/tweet_repository.dart';
 
 class TweetController extends GetxController {
-  final TweetRepository _tweetRepository = TweetRepository();
+  final TweetRepository tweetRepository;
   var tweets = <TweetModel>[].obs;
+
+  TweetController(this.tweetRepository);
 
   @override
   void onInit() {
     super.onInit();
-    fetchTweets();
+    loadTweets();
   }
 
-  Future<void> fetchTweets() async {
+  Future<void> createTweet({required String tweetContent, required String userId, required String username}) async {
     try {
-      var fetchedTweets = await _tweetRepository.fetchTweets();
-      tweets.value = fetchedTweets;
+      final tweet = TweetModel(
+        username: username,
+        tweetContent: tweetContent,
+        timestamp: DateTime.now().toString(),
+        userId: userId,
+      );
+      addTweet(tweet);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch tweets');
+      print('Error creating tweet: $e');
     }
   }
 
-  Future<void> addTweet(TweetModel tweet) async {
+  Future<void> loadTweets() async {
     try {
-      await _tweetRepository.addTweet(tweet);
-      tweets.add(tweet);
+      final loadedTweets = await tweetRepository.fetchTweets();
+      tweets.assignAll(loadedTweets.toList()); 
     } catch (e) {
-      Get.snackbar('Error', 'Failed to add tweet');
+      print('Error loading tweets: $e');
     }
+  }
+
+  void addTweet(TweetModel tweet) {
+    tweetRepository.addTweet(tweet);
   }
 }

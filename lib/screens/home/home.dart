@@ -1,23 +1,46 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smartup_challenge/controllers/authController.dart';
+import 'package:smartup_challenge/screens/home/drawer/drawer.dart';
 import 'package:smartup_challenge/screens/widgets/divider.dart';
 import 'package:smartup_challenge/screens/widgets/homeTopBar.dart';
 import 'package:smartup_challenge/screens/widgets/homeBottomBar.dart';
 import 'package:smartup_challenge/screens/home/storys/storyList.dart';
-import 'package:smartup_challenge/screens/home/tweets/tweetsList.dart'; // Asegúrate de importar el archivo correcto
+import 'package:smartup_challenge/screens/home/tweets/tweetsList.dart'; 
+import 'package:smartup_challenge/screens/widgets/flyingDrawerButton.dart'; 
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  Home({super.key});
+  final AuthController authController = AuthController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: HomeTopBar(),
-      body: Column(
+      body: Stack(
         children: [
-          StoryList(),
-          const CustomDivider(thickness: 0.5),
-          const Expanded(child: TweetsList()), 
+          Column(
+            children: [
+              StoryList(),
+              const CustomDivider(thickness: 0.5),
+              const Expanded(child: TweetsList()),
+            ],
+          ),
+          Positioned(
+            bottom: 80,
+            right: 20,
+            child: FlyingDrawerButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DrawerWidget(),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: const HomeBottomBar(),

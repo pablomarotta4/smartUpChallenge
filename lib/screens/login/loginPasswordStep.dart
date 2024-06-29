@@ -1,5 +1,6 @@
-// ignore_for_file: file_names, library_private_types_in_public_api
+// ignore_for_file: unused_local_variable
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/screens/widgets/divider.dart';
@@ -28,35 +29,36 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
   }
 
   void _handleLogin() async {
-    Provider.of<AuthController>(context, listen: false);
+    final auth = Provider.of<AuthController>(context, listen: false);
 
     try {
+       UserCredential loginSuccess;
       if (widget.loginFactor.contains('@')) {
+        loginSuccess = await auth.signInWithEmailAndPassword(
+          email: widget.loginFactor,
+          password: _passwordController.text,
+        );
       } else if (RegExp(r'^\+?[0-9]{10,15}$').hasMatch(widget.loginFactor)) {
-        // implementar logica de authenticacion con tel
+        // lgica de inicio de sesión con número de teléfono 
         return;
       } else {
-        // implementar logica de inicio de sesion con username
+        // lgica de inicio de sesión con nombre de usuario 
         return;
       }
 
-      if (mounted) {
-        setState(() {
-          _errorText = null;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Home(),
-            ),
-          );
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorText = 'Error al iniciar sesión';
-        });
-      }
+      setState(() {
+        _errorText = null;
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(),
+        ),
+      );
+        } catch (e) {
+      setState(() {
+        _errorText = 'Error logging in. Please try again.78';
+      });
     }
   }
 

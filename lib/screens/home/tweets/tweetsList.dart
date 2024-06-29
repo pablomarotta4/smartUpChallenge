@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartup_challenge/controllers/tweetController.dart';
+import 'package:smartup_challenge/repository/tweet_repository.dart';
 import 'package:smartup_challenge/screens/widgets/divider.dart';
 
 class TweetsList extends StatelessWidget {
@@ -8,7 +9,8 @@ class TweetsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TweetController tweetController = Get.put(TweetController());
+    final TweetRepository tweetRepository = TweetRepository();
+    final TweetController tweetController = Get.put(TweetController(tweetRepository));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -32,12 +34,6 @@ class TweetsList extends StatelessWidget {
           );
         }
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // logica para agregar un nuevo tweet
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }

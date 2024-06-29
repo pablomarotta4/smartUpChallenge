@@ -22,6 +22,11 @@ class SmallButton extends StatelessWidget {
       'color': Color.fromARGB(255, 29, 161, 242),
       'textColor': Colors.white,
     },
+    'post': {
+      'text': 'Post',
+      'color': Color.fromARGB(255, 29, 161, 242),
+      'textColor': Colors.white,
+    },
   };
 
   @override
