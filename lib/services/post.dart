@@ -19,7 +19,6 @@ class PostService {
   Future<void> postTweet(String text) async {
     if (text.isEmpty) return;
 
-
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     await FirebaseFirestore.instance.collection('tweets').add({
@@ -30,6 +29,10 @@ class PostService {
   }
 
   Stream<List<TweetModel>> getTweets() {
-    return FirebaseFirestore.instance.collection('tweets').snapshots().map(_tweetsList);
+    return FirebaseFirestore.instance
+        .collection('tweets')
+        .orderBy('timestamp', descending: true) 
+        .snapshots()
+        .map(_tweetsList);
   }
 }

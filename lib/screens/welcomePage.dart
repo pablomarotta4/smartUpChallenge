@@ -23,9 +23,6 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     final auth = Provider.of<AuthController>(context, listen: false);
     auth.authStateChanges().listen((User? user) {
-      setState(() {
-        // actualizar estado 
-      });
     });
   }
 
@@ -34,6 +31,7 @@ class _WelcomePageState extends State<WelcomePage> {
     final auth = Provider.of<AuthController>(context);
 
     return Scaffold(
+      extendBody: true, 
       body: SafeArea(
         child: Column(
           children: [
@@ -58,17 +56,21 @@ class _WelcomePageState extends State<WelcomePage> {
                     RoundedButton(
                       buttonType: 'google',
                       onPressed: () async {
-                        User? user = await auth.signInWithGoogle();
-                        if (user != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Home()),
-                          );
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const WelcomePage()),
-                          );
+                        try {
+                          User? user = await auth.signInWithGoogle();
+                          if (user != null) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => Home()),
+                            );
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const WelcomePage()),
+                            );
+                          }
+                        } catch (e) {
+                          print("Error signing in with Google: $e");
                         }
                       },
                     ),

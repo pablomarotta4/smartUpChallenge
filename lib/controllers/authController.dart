@@ -176,16 +176,24 @@ class AuthController with ChangeNotifier {
     return userCredential;
   }
 
-  Future<String?> getUserName(String uid) async {
+  Future<String?> getUserUsername(String uid) async {
     try {
-      final userDoc = await _userRepository.getUserByUid(uid);
-      if (userDoc != null) {
-        return userDoc.username;
-      }
-    } catch (e) {
+      final userDoc = await _userRepository.getUserUsername(uid);
+      return userDoc;
+        } catch (e) {
       print("Error getting username: $e");
     }
     return null;
+  }
+
+  Future<String> getUserName(String uid) async {
+    try {
+      final userDoc = await _userRepository.getUserName(uid);
+      return userDoc;
+        } catch (e) {
+      print("Error getting username: $e");
+    }
+    return '';
   }
 
   Future<bool> checkIfEmailOrPhoneOrUsernameExists({String? email, String? phone, String? username}) async {

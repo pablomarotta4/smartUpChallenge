@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartup_challenge/models/user_model.dart';
 
 class UserRepository {
@@ -9,7 +8,7 @@ class UserRepository {
 
   Future<void> createUser(UserModel user) async {
     try {
-      await _firestore.collection('users').doc(user.emailOrPhone).set(user.toMap());
+      await _firestore.collection('users').doc(user.uid).set(user.toMap());
     } catch (e) {
       throw Exception('Error creating user: $e');
     }
@@ -35,16 +34,39 @@ class UserRepository {
     }
   }
 
-
-  Future<UserModel?> getUserByUid(String uid) async {
+  Future<String> getUserUsername(String uid) async {
     try {
-      final querySnapshot = await _firestore.collection('users').where('uid', isEqualTo: uid).get();
-      if (querySnapshot.docs.isNotEmpty) {
-        return UserModel.fromMap(querySnapshot.docs.first.data());
-      }
-      return null;
+      final doc = await _firestore.collection('users').doc(uid).get();
+      return doc.data()?['username'];
     } catch (e) {
-      throw Exception('Error getting user by UID: $e');
+      print('Error getting user: $e');
+      throw Exception('Error getting user: $e');
+    }
+  }
+
+  Future<String> getUserName(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      return doc.data()?['name'];
+    } catch (e) {
+      print('Error getting user: $e');
+      throw Exception('Error getting user: $e');
+    }
+  }
+
+  Future<void> updateUser(UserModel user) async {
+    try {
+      await _firestore.collection('users').doc(user.uid).update(user.toMap());
+    } catch (e) {
+      throw Exception('Error updating user: $e');
+    }
+  }
+
+  Future<void> deleteUser(String uid) async {
+    try {
+      await _firestore.collection('users').doc(uid).delete();
+    } catch (e) {
+      throw Exception('Error deleting user: $e');
     }
   }
 
@@ -74,5 +96,4 @@ class UserRepository {
       throw Exception('Error checking if phone exists: $e');
     }
   }
-
 }
