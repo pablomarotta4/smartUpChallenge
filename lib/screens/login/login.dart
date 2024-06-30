@@ -88,7 +88,7 @@ class _LoginState extends State<Login> {
             Expanded(
               child: Container(),
             ),
-            CustomDivider(),
+            const CustomDivider(thickness: 0.01),
             LoginFooter(
               buttonType: 'next',
               onPressed: _handleNext,

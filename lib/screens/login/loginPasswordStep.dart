@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartup_challenge/screens/home/home.dart';
@@ -32,17 +30,17 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     final auth = Provider.of<AuthController>(context, listen: false);
 
     try {
-       UserCredential loginSuccess;
+      UserCredential loginSuccess;
       if (widget.loginFactor.contains('@')) {
         loginSuccess = await auth.signInWithEmailAndPassword(
           email: widget.loginFactor,
           password: _passwordController.text,
         );
       } else if (RegExp(r'^\+?[0-9]{10,15}$').hasMatch(widget.loginFactor)) {
-        // lgica de inicio de sesión con número de teléfono 
+        // lógica de inicio de sesión con número de teléfono 
         return;
       } else {
-        // lgica de inicio de sesión con nombre de usuario 
+        // lógica de inicio de sesión con nombre de usuario 
         return;
       }
 
@@ -55,9 +53,9 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
           builder: (context) => Home(),
         ),
       );
-        } catch (e) {
+    } catch (e) {
       setState(() {
-        _errorText = 'Error logging in. Please try again.78';
+        _errorText = 'Error logging in. Please try again.';
       });
     }
   }
@@ -71,15 +69,17 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 21, 23, 24),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderWidget(showButton: true, iconType: 'back'),
+            HeaderWidget(showButton: true, iconType: 'close'),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
               child: Text(
                 "Enter your password",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
             Padding(
@@ -93,6 +93,9 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                   enabledBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
                   ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue),
+                  ),
                   errorText: _errorText,
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -105,13 +108,17 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                 style: const TextStyle(color: Colors.white),
               ),
             ),
+            const SizedBox(height: 10), // Espacio entre el campo de texto y el footer
             Expanded(
               child: Container(),
             ),
-            const CustomDivider(),
-            LoginFooter(
-              buttonType: 'login',
-              onPressed: _handleLogin,
+            const CustomDivider(thickness: 0.01),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: LoginFooter(
+                buttonType: 'login',
+                onPressed: _handleLogin,
+              ),
             ),
           ],
         ),

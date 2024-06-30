@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       child: MaterialApp(
         theme: ThemeData(
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: const Color.fromARGB(255, 21, 23, 24),
+          scaffoldBackgroundColor: Color.fromARGB(255, 21, 23, 24),
         ),
         home: const WelcomePage(),
       ),
