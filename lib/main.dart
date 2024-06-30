@@ -1,10 +1,10 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
+import 'package:smartup_challenge/models/tweet_model.dart';
 import 'package:smartup_challenge/screens/welcomePage.dart';
+import 'package:smartup_challenge/services/post.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,25 +19,42 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      final authController = Provider.of<AuthController>(context, listen: false);
+      authController.signOut();
+    }
+  }
+
   @override
   void dispose() {
-    final authController = Provider.of<AuthController>(context, listen: false);
-    authController.signOut();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("Building MyApp");
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthController()),
-        
+        StreamProvider<List<TweetModel>>(
+          create: (_) => PostService().getTweets(),
+          initialData: [],
+        ),
       ],
       child: MaterialApp(
         theme: ThemeData(
-          brightness: Brightness.dark, 
-          scaffoldBackgroundColor: const Color.fromARGB(255, 21, 23, 24), 
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: const Color.fromARGB(255, 21, 23, 24),
         ),
         home: const WelcomePage(),
       ),
