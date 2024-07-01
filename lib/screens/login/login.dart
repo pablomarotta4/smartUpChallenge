@@ -19,41 +19,47 @@ class _LoginState extends State<Login> {
   final TextEditingController _controller = TextEditingController();
   String? _errorText;
 
-  void _handleNext() async {
-    String input = _controller.text.trim();
-    final auth = Provider.of<AuthController>(context, listen: false);
-
-    try {
-      bool exists = await auth.checkIfEmailOrPhoneOrUsernameExists(
-        email: input,
-        phone: input,
-        username: input,
-      );
-      
-      setState(() {
-        if (exists) {
-          _errorText = null;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EnterPasswordPage(loginFactor: input),
-            ),
-          );
-        } else {
-          _errorText = 'The account does not exist.';
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _errorText = 'An error occurred. Please try again.';
-      });
-    }
-  }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleNext() async {
+    String input = _controller.text.trim();
+    final auth = Provider.of<AuthController>(context, listen: false);
+
+    try {
+      bool exists = await auth.checkIfUserExist(
+        input: input,
+      );
+
+      if (exists) {
+        _navigateToEnterPasswordPage(input);
+      } else {
+        _setErrorText('The account does not exist.');
+      }
+    } catch (e) {
+      _setErrorText('An error occurred. Please try again.');
+    }
+  }
+
+  void _navigateToEnterPasswordPage(String input) {
+    setState(() {
+      _errorText = null;
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EnterPasswordPage(loginFactor: input),
+      ),
+    );
+  }
+
+  void _setErrorText(String error) {
+    setState(() {
+      _errorText = error;
+    });
   }
 
   @override
@@ -62,7 +68,7 @@ class _LoginState extends State<Login> {
       body: SafeArea(
         child: Column(
           children: [
-            HeaderWidget(showButton: true, iconType: 'close'),
+            const HeaderWidget(showButton: true, iconType: 'close'),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
               child: Text(

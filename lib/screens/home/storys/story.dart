@@ -31,24 +31,27 @@ class StoryItem extends StatelessWidget {
                 ),
               ),
             ),
-            if (isAddButton)
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.add, color: Colors.white, size: 16),
-                ),
-              ),
+            if (isAddButton) _buildAddButton(),
           ],
         ),
         Text(name, style: const TextStyle(color: Color.fromARGB(255, 163, 163, 163))),
       ],
+    );
+  }
+
+  Widget _buildAddButton() {
+    return Positioned(
+      bottom: 0,
+      right: 0,
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: const BoxDecoration(
+          color: Colors.blue,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.add, color: Colors.white, size: 16),
+      ),
     );
   }
 }

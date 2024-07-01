@@ -19,7 +19,7 @@ class UserModel {
     return {
       'username': username,
       'password': password,
-      'email or phone': emailOrPhone,
+      'email or phone': emailOrPhone, 
       'birth': birth,
       'uid': uid,
       'name': name,
@@ -28,12 +28,12 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      username: map['username'] as String,
-      password: map['password'] as String,
-      emailOrPhone: map['emailOrPhone'] as String,
-      birth: map['birth'] as String,
-      uid: map['uid'] as String,
-      name: map['name'] as String,
+      username: map['username'] ?? '',
+      password: map['password'] ?? '',
+      emailOrPhone: map[''] ?? '',
+      birth: map['birth'] ?? '',
+      uid: map['uid'] ?? '',
+      name: map['name'] ?? '',
     );
   }
 }

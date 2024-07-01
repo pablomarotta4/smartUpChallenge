@@ -1,8 +1,18 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 class HomeTopBar extends StatelessWidget implements PreferredSizeWidget {
+  const HomeTopBar({super.key});
+
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  void _onMenuButtonPressed(BuildContext context) {
+  }
+
+  void _onStarButtonPressed(BuildContext context) {
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,10 +20,8 @@ class HomeTopBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.menu, color: Colors.blue),
-        onPressed: () {
-          // accion del botón
-        },
+        icon: const Icon(Icons.menu, color: Colors.blue),
+        onPressed: () => _onMenuButtonPressed(context),
       ),
       title: Center(
         child: Image.asset(
@@ -23,10 +31,8 @@ class HomeTopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          icon: Icon(Icons.star, color: Colors.blue),
-          onPressed: () {
-            // acción del boton
-          },
+          icon: const Icon(Icons.star, color: Colors.blue),
+          onPressed: () => _onStarButtonPressed(context),
         ),
       ],
     );

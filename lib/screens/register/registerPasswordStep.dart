@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +37,7 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
     });
   }
 
-  Future<void> _handleRegisterEmail(BuildContext context) async {
+  Future<void> _handleRegister(BuildContext context) async {
     final auth = Provider.of<AuthController>(context, listen: false);
     String password = _passwordController.text;
 
@@ -49,49 +51,29 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
       );
 
       if (userCredential != null) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home()),
+          MaterialPageRoute(builder: (context) => const Home()),
         );
       } else {
-        setState(() {
-          _errorText = 'Error al crear la cuenta';
-        });
+        _setErrorText('Error creating account');
       }
     } catch (e) {
-      setState(() {
-        _errorText = 'Error al crear la cuenta: $e';
-      });
+      _setErrorText('Error creating account: $e');
     }
   }
 
-  Future<void> _handleRegisterPhone(BuildContext context) async {
-    final auth = Provider.of<AuthController>(context, listen: false);
-
-    try {
-      await auth.createAccount(
-        emailOrPhone: widget.emailOrPhone,
-        username: widget.name,
-        password: _passwordController.text,
-        birth: widget.birth,
-        context: context,
-      );
-    } catch (e) {
-      setState(() {
-        _errorText = 'Error al crear la cuenta: $e';
-      });
-    }
+  void _setErrorText(String error) {
+    setState(() {
+      _errorText = error;
+    });
   }
 
-  void _handleRegister() {
-    if (widget.emailOrPhone.contains('@')) {
-      _handleRegisterEmail(context);
-    } else if (widget.emailOrPhone.contains('+')) {
-      _handleRegisterPhone(context);
+  void _handleSubmit() {
+    if (widget.emailOrPhone.contains('@') || widget.emailOrPhone.contains('+')) {
+      _handleRegister(context);
     } else {
-      setState(() {
-        _errorText = 'Email or phone number is invalid';
-      });
+      _setErrorText('Invalid email or phone number');
     }
   }
 
@@ -108,7 +90,7 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderWidget(showButton: true, iconType: 'back'),
+            const HeaderWidget(showButton: true, iconType: 'back'),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
               child: Text(
@@ -139,13 +121,13 @@ class _RegisterPasswordStepState extends State<RegisterPasswordStep> {
                 style: const TextStyle(color: Colors.white),
               ),
             ),
-            Expanded(
-              child: Container(),
+            const Expanded(
+              child: SizedBox(),
             ),
-            CustomDivider(),
+            const CustomDivider(thickness: 0.01),
             RegisterFooter(
               buttonType: 'register',
-              onPressed: _handleRegister,
+              onPressed: _handleSubmit,
             ),
           ],
         ),

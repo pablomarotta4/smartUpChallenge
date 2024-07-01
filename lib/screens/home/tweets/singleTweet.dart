@@ -47,7 +47,7 @@ class Tweet extends StatelessWidget {
             children: [
               const CircleAvatar(
                 radius: 30,
-                backgroundImage: const NetworkImage('https://hips.hearstapps.com/digitalspyuk.cdnds.net/17/13/1490989105-twitter1.jpg?resize=980:*'),
+                backgroundImage: NetworkImage('https://hips.hearstapps.com/digitalspyuk.cdnds.net/17/13/1490989105-twitter1.jpg?resize=980:*'),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -90,38 +90,8 @@ class Tweet extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.comment, size: 20, color: Colors.grey),
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        const SizedBox(width: 20),
-                        IconButton(
-                          icon: const Icon(Icons.repeat, size: 20, color: Colors.grey),
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        const SizedBox(width: 20),
-                        IconButton(
-                          icon: const Icon(Icons.favorite_border, size: 20, color: Colors.grey),
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        const SizedBox(width: 20),
-                        IconButton(
-                          icon: const Icon(Icons.share, size: 20, color: Colors.grey),
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 10),
+                    _buildActionButtons(),
                   ],
                 ),
               ),
@@ -130,6 +100,30 @@ class Tweet extends StatelessWidget {
           const CustomDivider(thickness: 0.17),
         ],
       ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        _buildIconButton(Icons.comment, () {}),
+        const SizedBox(width: 20),
+        _buildIconButton(Icons.repeat, () {}),
+        const SizedBox(width: 20),
+        _buildIconButton(Icons.favorite_border, () {}),
+        const SizedBox(width: 20),
+        _buildIconButton(Icons.share, () {}),
+      ],
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
+    return IconButton(
+      icon: Icon(icon, size: 20, color: Colors.grey),
+      onPressed: onPressed,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
     );
   }
 }

@@ -14,8 +14,13 @@ class TweetRepository {
 
   Future<List<TweetModel>> fetchTweets() async {
     try {
-      QuerySnapshot snapshot = await _firestore.collection('tweets').orderBy('timestamp', descending: true).get();
-      return snapshot.docs.map((doc) => TweetModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      QuerySnapshot snapshot = await _firestore
+          .collection('tweets')
+          .orderBy('timestamp', descending: true)
+          .get();
+      return snapshot.docs
+          .map((doc) => TweetModel.fromDocumentSnapshot(doc))
+          .toList();
     } catch (e) {
       throw Exception('Error fetching tweets: $e');
     }

@@ -22,14 +22,11 @@ class UserRepository {
         if (data != null) {
           return UserModel.fromMap(data);
         } else {
-          print('Document data is null for emailOrPhone: $emailOrPhone');
         }
       } else {
-        print('No document found for emailOrPhone: $emailOrPhone');
       }
       return null;
     } catch (e) {
-      print('Error getting user: $e');
       throw Exception('Error getting user: $e');
     }
   }
@@ -39,7 +36,6 @@ class UserRepository {
       final doc = await _firestore.collection('users').doc(uid).get();
       return doc.data()?['username'];
     } catch (e) {
-      print('Error getting user: $e');
       throw Exception('Error getting user: $e');
     }
   }
@@ -49,7 +45,15 @@ class UserRepository {
       final doc = await _firestore.collection('users').doc(uid).get();
       return doc.data()?['name'];
     } catch (e) {
-      print('Error getting user: $e');
+      throw Exception('Error getting user: $e');
+    }
+  }
+
+  Future<String> getUserMailWithUsername(String username) async {
+    try {
+      final querySnapshot = await _firestore.collection('users').where('username', isEqualTo: username).get();
+      return querySnapshot.docs.first.data()['email or phone'];
+    } catch (e) {
       throw Exception('Error getting user: $e');
     }
   }

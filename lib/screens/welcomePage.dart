@@ -23,19 +23,47 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     final auth = Provider.of<AuthController>(context, listen: false);
     auth.authStateChanges().listen((User? user) {
+     
     });
+  }
+
+  Future<void> _handleGoogleSignIn(BuildContext context) async {
+    final auth = Provider.of<AuthController>(context, listen: false);
+    try {
+      User? user = await auth.signInWithGoogle();
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomePage()),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error signing in with Google: $e")),
+      );
+    }
+  }
+
+  void _navigateToRegister(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegisterPage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthController>(context);
-
     return Scaffold(
-      extendBody: true, 
+      extendBody: true,
       body: SafeArea(
         child: Column(
           children: [
-            HeaderWidget(showButton: false),
+            const HeaderWidget(showButton: false),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 10.0),
@@ -55,24 +83,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     const Spacer(),
                     RoundedButton(
                       buttonType: 'google',
-                      onPressed: () async {
-                        try {
-                          User? user = await auth.signInWithGoogle();
-                          if (user != null) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => Home()),
-                            );
-                          } else {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const WelcomePage()),
-                            );
-                          }
-                        } catch (e) {
-                          print("Error signing in with Google: $e");
-                        }
-                      },
+                      onPressed: () => _handleGoogleSignIn(context),
                     ),
                     const SizedBox(height: 10),
                     const Row(
@@ -104,12 +115,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     const SizedBox(height: 10),
                     RoundedButton(
                       buttonType: 'createAccount',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const RegisterPage()),
-                        );
-                      },
+                      onPressed: () => _navigateToRegister(context),
                     ),
                     const SizedBox(height: 20),
                     const Padding(

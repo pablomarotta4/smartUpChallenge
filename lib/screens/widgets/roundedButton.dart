@@ -1,3 +1,4 @@
+// ignore_for_file: file_names, deprecated_member_use
 
 import 'package:flutter/material.dart';
 
@@ -5,9 +6,13 @@ class RoundedButton extends StatelessWidget {
   final String buttonType;
   final VoidCallback onPressed;
 
-  RoundedButton({Key? key, required this.buttonType, required this.onPressed}) : super(key: key);
+  const RoundedButton({
+    super.key,
+    required this.buttonType,
+    required this.onPressed,
+  });
 
-  final Map<String, dynamic> buttonsData = {
+  static const Map<String, dynamic> buttonsData = {
     'google': {
       'text': 'Continue with Google',
       'color': Colors.white,
@@ -28,7 +33,7 @@ class RoundedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(buttonData['color']),
+        backgroundColor: WidgetStateProperty.all<Color>(buttonData['color']),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
@@ -36,14 +41,14 @@ class RoundedButton extends StatelessWidget {
         ),
       ),
       child: Container(
-        constraints: BoxConstraints(maxWidth: 320),
+        constraints: const BoxConstraints(maxWidth: 320),
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (buttonData['icon'] != null) ...[
               Image.asset(buttonData['icon'], height: 18, width: 18),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
             ],
             Flexible(
               child: Text(

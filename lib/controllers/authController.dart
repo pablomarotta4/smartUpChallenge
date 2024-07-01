@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, empty_catches
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,7 @@ class AuthController with ChangeNotifier {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return null; // Si el usuario cancela el proceso de inicio de sesión.
+        return null; 
       }
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -53,7 +55,6 @@ class AuthController with ChangeNotifier {
 
       return userCredential.user;
     } catch (e) {
-      print('Error signing in with Google: $e');
       return null;
     }
   }
@@ -181,7 +182,6 @@ class AuthController with ChangeNotifier {
       final userDoc = await _userRepository.getUserUsername(uid);
       return userDoc;
         } catch (e) {
-      print("Error getting username: $e");
     }
     return null;
   }
@@ -191,20 +191,29 @@ class AuthController with ChangeNotifier {
       final userDoc = await _userRepository.getUserName(uid);
       return userDoc;
         } catch (e) {
-      print("Error getting username: $e");
     }
     return '';
   }
 
-  Future<bool> checkIfEmailOrPhoneOrUsernameExists({String? email, String? phone, String? username}) async {
-    if (email != null && email.isNotEmpty) {
-      return await checkIfEmailExists(email);
-    } else if (phone != null && phone.isNotEmpty) {
-      return await checkIfPhoneExists(phone);
-    } else if (username != null && username.isNotEmpty) {
-      return await checkIfUsernameExists(username);
-    } else {
-      return false;
+  Future<String> getUserMailWithUsername( {required String username}) async {
+    try {
+      final userDoc = await _userRepository.getUserMailWithUsername(username);
+      return userDoc;
+        } catch (e) {
     }
+    return '';
   }
-}
+
+  Future<bool> checkIfUserExist({String? input}) async {
+    if (input != null && input.isNotEmpty) {
+      if(input.contains('@')) {
+        return await checkIfEmailExists(input);
+      } else if (RegExp(r'^\+?[0-9]{10,15}$').hasMatch(input)) {
+        return await checkIfPhoneExists(input);
+      } else {
+        return await checkIfUsernameExists(input);
+      }
+    }
+    return false; 
+  }
+ }

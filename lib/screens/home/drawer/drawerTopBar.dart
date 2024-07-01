@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:smartup_challenge/screens/home/home.dart';
 import 'package:smartup_challenge/screens/widgets/smallButton.dart';
@@ -19,7 +21,7 @@ class DrawerTopBar extends StatelessWidget {
             onPressed: () async {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Home()),
+                MaterialPageRoute(builder: (context) => const Home()),
               );
             },
           ),
@@ -30,7 +32,7 @@ class DrawerTopBar extends StatelessWidget {
             Navigator.of(context).pop(); 
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => Home()),
+              MaterialPageRoute(builder: (context) => const Home()),
             );
           },
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smartup_challenge/controllers/authController.dart';
 import 'package:smartup_challenge/screens/home/drawer/drawer.dart';
 import 'package:smartup_challenge/screens/home/tweets/tweets.dart';
 import 'package:smartup_challenge/screens/widgets/divider.dart';
@@ -9,14 +8,13 @@ import 'package:smartup_challenge/screens/home/storys/storyList.dart';
 import 'package:smartup_challenge/screens/widgets/flyingDrawerButton.dart';
 
 class Home extends StatelessWidget {
-  Home({super.key});
-  final AuthController authController = AuthController();
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: HomeTopBar(),
+      appBar: const HomeTopBar(),
       body: Stack(
         children: [
           Column(
