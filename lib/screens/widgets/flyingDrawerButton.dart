@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FlyingDrawerButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -7,22 +10,12 @@ class FlyingDrawerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return FloatingActionButton(
       onPressed: onPressed,
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-        ),
-        padding: WidgetStateProperty.all<EdgeInsets>(
-          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
-        ),
-      ),
-      child: const Icon(
-        Icons.add,
-        color: Colors.black,
+      backgroundColor: Colors.blue,
+      child: const FaIcon(
+        FontAwesomeIcons.featherAlt,
+        color: Colors.white,
       ),
     );
   }

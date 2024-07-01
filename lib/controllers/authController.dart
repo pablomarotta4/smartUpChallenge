@@ -41,7 +41,7 @@ class AuthController with ChangeNotifier {
       if (userCredential.additionalUserInfo!.isNewUser) {
         final user = userCredential.user!;
         final userModel = UserModel(
-          username: _generateUsername(user.displayName ?? '', user.metadata.creationTime.toString()),
+          username: _generateUsername(user.displayName ?? ''),
           emailOrPhone: user.email ?? user.phoneNumber ?? '',
           birth: '',
           password: '',
@@ -95,7 +95,7 @@ class AuthController with ChangeNotifier {
             final userCredential = await _auth.signInWithCredential(credential);
             if (userCredential.user != null) {
               final userModel = UserModel(
-                username: _generateUsername(username, birth),
+                username: _generateUsername(username),
                 emailOrPhone: emailOrPhone,
                 birth: birth,
                 password: '',
@@ -109,7 +109,7 @@ class AuthController with ChangeNotifier {
             throw Exception(error.message ?? 'Verification failed');
           },
           codeSent: (String verificationId, int? forceResendingToken) {
-            // Aquí podrías redirigir a la página de verificación de teléfono
+            // logica de navegacion para ingresar el codigo de verificacion
           },
           codeAutoRetrievalTimeout: (String verificationId) {
             return;
@@ -121,7 +121,7 @@ class AuthController with ChangeNotifier {
 
       if (userCredential != null && userCredential.user != null) {
         final userModel = UserModel(
-          username: _generateUsername(username, birth),
+          username: _generateUsername(username),
           emailOrPhone: emailOrPhone,
           birth: birth,
           password: '',
@@ -146,10 +146,10 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  String _generateUsername(String name, String birth) {
+  String _generateUsername(String name) {
     String formattedName = name.toLowerCase().replaceAll(' ', '');
     DateTime now = DateTime.now();
-    String formattedDate = DateFormat('yyyyMMddHHmm').format(now);
+    String formattedDate = DateFormat('yyyyMMdd').format(now);
     return '$formattedName$formattedDate';
   }
 

@@ -23,10 +23,17 @@ class DrawerTopBar extends StatelessWidget {
               );
             },
           ),
-          SmallButton(
-            buttonType: 'post',
-            onPressed: onPost,
-          ),
+        SmallButton(
+          buttonType: 'post',
+          onPressed: () async {
+            onPost();
+            Navigator.of(context).pop(); 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+          },
+        ),
         ],
       ),
     );

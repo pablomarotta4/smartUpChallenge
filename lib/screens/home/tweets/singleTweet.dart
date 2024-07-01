@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:smartup_challenge/screens/widgets/divider.dart';
 
 class Tweet extends StatelessWidget {
   final String name;
@@ -37,7 +38,7 @@ class Tweet extends StatelessWidget {
     final displayTime = _formatTimestamp(timestamp);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,8 +46,8 @@ class Tweet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage('assets/user_placeholder.png'),
+                radius: 30,
+                backgroundImage: const NetworkImage('https://hips.hearstapps.com/digitalspyuk.cdnds.net/17/13/1490989105-twitter1.jpg?resize=980:*'),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -89,7 +90,6 @@ class Tweet extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -127,7 +127,7 @@ class Tweet extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(height: 1, thickness: 1),
+          const CustomDivider(thickness: 0.17),
         ],
       ),
     );

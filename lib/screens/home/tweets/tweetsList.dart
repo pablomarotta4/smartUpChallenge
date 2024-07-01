@@ -16,7 +16,7 @@ class Tweetslist extends StatefulWidget {
 class _TweetslistState extends State<Tweetslist> {
   @override
   Widget build(BuildContext context) {
-    final posts = Provider.of<List<TweetModel>>(context) ?? [];
+    final posts = Provider.of<List<TweetModel>>(context);
     if (posts.isEmpty) {
       return const Center(child: Text('No tweets available.'));
     }

@@ -5,6 +5,7 @@ import 'package:smartup_challenge/controllers/authController.dart';
 import 'package:smartup_challenge/models/tweet_model.dart';
 import 'package:smartup_challenge/screens/welcomePage.dart';
 import 'package:smartup_challenge/services/post.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +48,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthController()),
         StreamProvider<List<TweetModel>>(
-          create: (_) => PostService().getTweets(),
+          create: (_) => PostService().getTweets().asyncMap((tweets) async {
+            return await compute(parseTweets, tweets);
+          }),
           initialData: [],
         ),
       ],
@@ -60,4 +63,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ),
     );
   }
+}
+
+List<TweetModel> parseTweets(List<TweetModel> tweets) {
+  return tweets;
 }

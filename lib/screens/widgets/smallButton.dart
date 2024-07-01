@@ -4,7 +4,7 @@ class SmallButton extends StatelessWidget {
   final String buttonType; 
   final VoidCallback onPressed;
 
-  SmallButton({Key? key, required this.buttonType, required this.onPressed}) : super(key: key);
+  SmallButton({super.key, required this.buttonType, required this.onPressed});
 
   final Map<String, dynamic> buttonsData = {
     'next': {

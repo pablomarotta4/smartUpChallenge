@@ -6,7 +6,7 @@ import 'package:smartup_challenge/screens/widgets/divider.dart';
 import 'package:smartup_challenge/screens/widgets/homeTopBar.dart';
 import 'package:smartup_challenge/screens/widgets/homeBottomBar.dart';
 import 'package:smartup_challenge/screens/home/storys/storyList.dart';
-import 'package:smartup_challenge/screens/widgets/flyingDrawerButton.dart'; 
+import 'package:smartup_challenge/screens/widgets/flyingDrawerButton.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -22,7 +22,7 @@ class Home extends StatelessWidget {
           Column(
             children: [
               StoryList(),
-              const CustomDivider(thickness: 0.5),
+              const CustomDivider(thickness: 0.3),
               const Expanded(child: Tweets()),
             ],
           ),

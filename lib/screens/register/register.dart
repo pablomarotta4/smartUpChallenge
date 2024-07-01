@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartup_challenge/controllers/authController.dart';
@@ -85,11 +87,11 @@ class _RegisterPageState extends State<RegisterPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HeaderWidget(showButton: true, iconType: 'back'),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
               child: Text(
                 "Create your account",
-                style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
             Expanded(
