@@ -17,11 +17,21 @@ class DrawerWidget extends StatefulWidget {
 class _DrawerWidgetState extends State<DrawerWidget> {
   final TextEditingController _tweetController = TextEditingController();
   final PostService _postService = PostService();
+  final ValueNotifier<bool> _isButtonEnabled = ValueNotifier(false);
 
   @override
   void dispose() {
     _tweetController.dispose();
+    _isButtonEnabled.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tweetController.addListener(() {
+      _isButtonEnabled.value = _tweetController.text.isNotEmpty;
+    });
   }
 
   @override
@@ -34,11 +44,21 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: [
           DrawerTopBar(
             onPost: () async {
-              await _postService.postTweet(_tweetController.text);
-              if (context.mounted) {
-                _navigateToHome(context);
+              if (_tweetController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Tweet cannot be empty'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              } else {
+                await _postService.postTweet(_tweetController.text);
+                if (context.mounted) {
+                  _navigateToHome(context);
+                }
               }
             },
+            isButtonEnabled: _isButtonEnabled,
           ),
           Expanded(
             child: Padding(
@@ -60,7 +80,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   void _navigateToHome(BuildContext context) {
-    Navigator.of(context).pop(); 
+    Navigator.of(context).pop();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const Home()),

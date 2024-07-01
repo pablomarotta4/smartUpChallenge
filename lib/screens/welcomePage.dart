@@ -23,7 +23,7 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     final auth = Provider.of<AuthController>(context, listen: false);
     auth.authStateChanges().listen((User? user) {
-     
+      
     });
   }
 

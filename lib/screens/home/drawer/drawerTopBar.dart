@@ -6,8 +6,9 @@ import 'package:smartup_challenge/screens/widgets/smallButton.dart';
 
 class DrawerTopBar extends StatelessWidget {
   final VoidCallback onPost;
+  final ValueNotifier<bool> isButtonEnabled;
 
-  const DrawerTopBar({required this.onPost, super.key});
+  const DrawerTopBar({required this.onPost, required this.isButtonEnabled, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +26,17 @@ class DrawerTopBar extends StatelessWidget {
               );
             },
           ),
-        SmallButton(
-          buttonType: 'post',
-          onPressed: () async {
-            onPost();
-            Navigator.of(context).pop(); 
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const Home()),
-            );
-          },
-        ),
+          ValueListenableBuilder<bool>(
+            valueListenable: isButtonEnabled,
+            builder: (context, value, child) {
+              return SmallButton(
+                buttonType: 'post',
+                onPressed: value ? () async {
+                  onPost();
+                } : () {},  
+              );
+            },
+          ),
         ],
       ),
     );

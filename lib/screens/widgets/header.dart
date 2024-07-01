@@ -38,16 +38,25 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
           if (widget.showButton)
-            GestureDetector(
-              onTap: _handleIconTap,
-              child: Icon(widget.iconSelector[widget.iconType], color: Colors.blue),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: _handleIconTap,
+                child: Icon(widget.iconSelector[widget.iconType], color: Colors.blue),
+              ),
             ),
-          Image.asset('assets/icons/twitter.png', height: 35, width: 35),
-          const SizedBox(width: 24),
+          Center(
+            child: Image.asset('assets/icons/twitter.png', height: 35, width: 35),
+          ),
+          if (widget.showButton)
+            const Align(
+              alignment: Alignment.centerRight,
+              child: SizedBox(width: 24), 
+            ),
         ],
       ),
     );
